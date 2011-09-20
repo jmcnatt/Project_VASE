@@ -69,15 +69,15 @@ public class LoginSplash extends GuiWindow implements ActionListener
 	 */
 	private void makeItems()
 	{
-		jbLogin = createMainButton("Login");
-		jbCancel = createMainButton("Cancel");
-		jbHelp = createMainButton("Help");
-		jtfServer = (JTextField) createMainTextField(SETTINGS_READER.lastServer);
-		jtfUsername = (JTextField) createMainTextField(SETTINGS_READER.lastUser);
-		jtfPassword = (JPasswordField) createMainPasswordField();
-		jlError = createMainErrorLabel();
+		jbLogin = Utilities.createMainButton("Login");
+		jbCancel = Utilities.createMainButton("Cancel");
+		jbHelp = Utilities.createMainButton("Help");
+		jtfServer = (JTextField) Utilities.createMainTextField(SETTINGS_READER.lastServer);
+		jtfUsername = (JTextField) Utilities.createMainTextField(SETTINGS_READER.lastUser);
+		jtfPassword = (JPasswordField) Utilities.createMainPasswordField();
+		jlError = Utilities.createMainErrorLabel();
 		
-		jtaInfo = createMainTextArea();
+		jtaInfo = Utilities.createMainTextArea();
 		jtaInfo.setFocusable(false);
 		jtaInfo.setCursor(null);
 		jtaInfo.setOpaque(false);
@@ -105,9 +105,9 @@ public class LoginSplash extends GuiWindow implements ActionListener
 		northLayout.putConstraint(SpringLayout.EAST, splashLabel, 0, SpringLayout.EAST, jpNorth);
 		
 		JPanel jpSouth = new JPanel(new SpringLayout());
-		JLabel jlServer = createMainLabel("Server Address: ");
-		JLabel jlUsername = createMainLabel("Username: ");
-		JLabel jlPassword = createMainLabel("Password: ");
+		JLabel jlServer = Utilities.createMainLabel("Server Address: ");
+		JLabel jlUsername = Utilities.createMainLabel("Username: ");
+		JLabel jlPassword = Utilities.createMainLabel("Password: ");
 		jpSouth.setOpaque(false);
 		jpSouth.setPreferredSize(DIM_MAIN_LOGIN_SOUTH);
 		jpSouth.setMaximumSize(DIM_MAIN_LOGIN_SOUTH);

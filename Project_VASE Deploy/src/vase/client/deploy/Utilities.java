@@ -12,6 +12,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import javax.swing.JPasswordField;
 import javax.swing.JRadioButton;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
@@ -23,6 +24,90 @@ import javax.swing.JTextField;
  */
 public class Utilities implements GuiConstraints
 {
+	/**
+	 * Creates a Label to be used in GuiMain
+	 * @param text the text to use in the label
+	 * @return the formatted label
+	 */
+	public static JLabel createMainLabel(String text)
+	{
+		JLabel label = new JLabel(text);
+		label.setOpaque(false);
+		
+		return label;
+	}
+	
+	/**
+	 * Creates an error label to be used in the LoginSplash
+	 * @return the formatted label for the login splash
+	 */
+	public static JLabel createMainErrorLabel()
+	{
+		JLabel label = new JLabel();
+		label.setOpaque(false);
+		label.setForeground(COLOR_ERROR_LABEL);
+		
+		return label;
+	}
+	
+	/**
+	 * Creates a TextField for use in the GuiMain
+	 * @param text the text to use in the field
+	 * @return the formatted text field
+	 */
+	public static JTextField createMainTextField(String text)
+	{
+		JTextField jtf = new JTextField(text);
+		jtf.setColumns(20);
+		jtf.setFont(FONT_DEPLOY_TEXT_FIELD);
+		
+		return jtf;
+	}
+	
+	/**
+	 * Creates a PasswordField for use in the GuiMain
+	 * @return the formatted password field
+	 */
+	public static JPasswordField createMainPasswordField()
+	{
+		JPasswordField jtf = new JPasswordField();
+		jtf.setColumns(20);
+		jtf.setFont(FONT_DEPLOY_TEXT_FIELD);
+		
+		return jtf;
+	}
+	
+	/**
+	 * Creates button to be used in the GuiMain
+	 * @param text the text to display on the button
+	 * @return the formatted button
+	 */
+	public static JButton createMainButton(String text)
+	{
+		JButton button = new JButton(text);
+		button.setPreferredSize(DIM_DEPLOY_BUTTON);
+		button.setMaximumSize(DIM_DEPLOY_BUTTON);
+		button.setMinimumSize(DIM_DEPLOY_BUTTON);
+		
+		return button;
+	}
+	
+	/**
+	 * Creates a TextArea for use in the GuiMain
+	 * @return the formatted text area
+	 */
+	public static JTextArea createMainTextArea()
+	{
+		JTextArea jta = new JTextArea();
+		jta.setEditable(false);
+		jta.setWrapStyleWord(true);
+		jta.setLineWrap(true);
+		jta.setFont(FONT_MAIN_LOG);
+		jta.setBackground(Color.WHITE);
+		
+		return jta;
+	}
+	
 	/**
 	 * Create a title label at 18pt font
 	 * @param text the text to use in the label

@@ -71,8 +71,8 @@ public class GuiMain extends GuiWindow
 		jListTemplates = new List(engine.getListTemplates());
 		jListVMs = new List(engine.getListVMs());
 		datacenterTree = new Tree(engine);
-		jtaMainLog = createMainTextArea();
-		jtaSystemLog = createMainTextArea();
+		jtaMainLog = Utilities.createMainTextArea();
+		jtaSystemLog = Utilities.createMainTextArea();
 		vmTable = new Table(engine);	
 		LOG.setWritableAreas(jtaMainLog, jtaSystemLog);
 	}
