@@ -41,7 +41,6 @@ public class ProcessErrorThread extends ThreadExt
 				String line = reader.readLine();
 				if (line == null) break;
 				LOG.write(line, true);
-				System.out.println(line);
 			}
 		}
 		

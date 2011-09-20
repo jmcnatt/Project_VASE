@@ -3,10 +3,10 @@
  */
 package vase.client.deploy;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.SwingUtilities;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 
@@ -34,6 +34,7 @@ public class RefreshThread extends ThreadExt
 	{
 		this.main = main;
 	}
+	
 	/**
 	 * Run Method, runs the thread
 	 */
@@ -72,65 +73,73 @@ public class RefreshThread extends ThreadExt
 	 */
 	private void updateTable()
 	{
-		int selection = main.vmTable.getSelectedRow();
-		main.vmTable.getModel().removeAllRows();
-		Object[][] engineData = main.engine.gatherData();
-		
-		for (int i = 0; i < engineData.length; i++)
+		SwingUtilities.invokeLater(new Runnable() 
 		{
-			Object[] rowData = engineData[i];
-			for (int j = 0; j < rowData.length; j++)
+			public void run()
 			{
-				main.vmTable.getModel().setValueAt(i, j, rowData[j]);
+				int selection = main.vmTable.getSelectedRow();
+				main.vmTable.getModel().removeAllRows();
+				Object[][] engineData = main.engine.gatherData();
+				
+				for (int i = 0; i < engineData.length; i++)
+				{
+					Object[] rowData = engineData[i];
+					for (int j = 0; j < rowData.length; j++)
+					{
+						main.vmTable.getModel().setValueAt(i, j, rowData[j]);
+					}
+				}
+				
+				main.vmTable.getModel().fireTableDataChanged();
+				
+				//If items were removed, can't selected them.  Check to see if the list size changed
+				if (selection <= main.vmTable.getModel().getRowCount() - 1)
+				{
+					main.vmTable.getSelectionModel().setSelectionInterval(selection, selection);
+				}
 			}
-		}
-		
-		main.vmTable.getModel().fireTableDataChanged();
-		
-		//If items were removed, can't selected them.  Check to see if the list size changed
-		if (selection <= main.vmTable.getModel().getRowCount() - 1)
-		{
-			main.vmTable.getSelectionModel().setSelectionInterval(selection, selection);
-		}
+		});
 	}
 	
 	/**
 	 * Updates the Lists on the Summary tab
 	 * <br />
-	 * Retrieves an Object[] from the CommandEngine, clears the lists, and adds
+	 * Retrieves an ArrayList<VirtualMachineExt> from the CommandEngine, clears the lists, and adds
 	 * new elements to each list's model.  Also gets the selection and sets the row
 	 * in the list to be selected again, since redrawing the list will clear it.
 	 */
 	private void updateLists()
 	{
-		DefaultListModel templateModel = (DefaultListModel) main.jListTemplates.getModel();
-		DefaultListModel vmModel = (DefaultListModel) main.jListVMs.getModel();
-		int templateSelection = main.jListTemplates.getSelectionModel().getMinSelectionIndex();
-		int vmSelection = main.jListVMs.getSelectionModel().getMinSelectionIndex();
-		
-		ArrayList<VirtualMachineExt> currentVMs = main.engine.getListVMs();
-		vmModel.removeAllElements();
-		
-		for (VirtualMachineExt vm : currentVMs)
+		SwingUtilities.invokeLater(new Runnable() 
 		{
-			vmModel.addElement(vm);
-		}
-		
-		//If items were removed, can't selected them.  Check to see if the list size changed
-		
-		if (templateSelection <= templateModel.getSize() - 1)
-		{
-			main.jListTemplates.getSelectionModel().setSelectionInterval(templateSelection, templateSelection);
-		}
-		
-		if (vmSelection <= vmModel.getSize() - 1)
-		{
-			main.jListVMs.getSelectionModel().setSelectionInterval(vmSelection, vmSelection);
-		}
-		
-		main.jListVMs.setPreferredSize(new Dimension(250, vmModel.size() * 20));
-		main.jListVMs.revalidate();
-		main.jListVMs.repaint();
+			public void run()
+			{
+				DefaultListModel templateModel = (DefaultListModel) main.jListTemplates.getModel();
+				DefaultListModel vmModel = (DefaultListModel) main.jListVMs.getModel();
+				int templateSelection = main.jListTemplates.getSelectionModel().getMinSelectionIndex();
+				int vmSelection = main.jListVMs.getSelectionModel().getMinSelectionIndex();
+				
+				ArrayList<VirtualMachineExt> currentVMs = main.engine.getListVMs();
+				vmModel.removeAllElements();
+				
+				for (VirtualMachineExt vm : currentVMs)
+				{
+					vmModel.addElement(vm);
+				}
+				
+				//If items were removed, can't selected them.  Check to see if the list size changed
+				
+				if (templateSelection <= templateModel.getSize() - 1)
+				{
+					main.jListTemplates.getSelectionModel().setSelectionInterval(templateSelection, templateSelection);
+				}
+				
+				if (vmSelection <= vmModel.getSize() - 1)
+				{
+					main.jListVMs.getSelectionModel().setSelectionInterval(vmSelection, vmSelection);
+				}
+			}
+		});
 	}
 	
 	/**

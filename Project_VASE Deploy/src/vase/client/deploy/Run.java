@@ -6,7 +6,7 @@ package vase.client.deploy;
 /**
  * Project_VASE Deploy
  * 
- * See the ReadMe.txt file included with this program and the 
+ * See the Readme.txt file included with this program and the 
  * help file for more information.
  * 
  * Edit the deploy.conf file before launching this program to customize 

@@ -144,7 +144,7 @@ public class GuiMain extends GuiWindow
 	private void addListeners()
 	{
 		ListIconRenderer renderer = new ListIconRenderer(jListTemplates, jListVMs);
-		ListListener listener = new ListListener(jListTemplates, jListVMs, engine);
+		ListListener listener = new ListListener(jListTemplates, jListVMs, this);
 
 		jListTemplates.setCellRenderer(renderer);
 		jListVMs.setCellRenderer(renderer);

@@ -16,7 +16,6 @@ import javax.swing.table.AbstractTableModel;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Deploy
  */
-
 public class TableModel extends AbstractTableModel implements GuiConstraints
 {
 	private static final long serialVersionUID = 8413149414045831647L;

@@ -35,6 +35,7 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 	private String osType;
 	private String osName;
 	private String dnsServer;
+	private String domainControllerIpAddress;
 	private boolean staticAddress = true;
 	
 	//Service attributes
@@ -313,6 +314,24 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 	public int getAccountsCSV()
 	{
 		return accountsCSV;
+	}
+
+	/**
+	 * Gets the IP address of the domain controller when binding a client to active directory
+	 * @return the domainControllerIpAddress
+	 */
+	public String getDomainControllerIpAddress()
+	{
+		return domainControllerIpAddress;
+	}
+
+	/**
+	 * Sets the IP address of the domain controller when binding a client to active directory
+	 * @param domainControllerIpAddress the domainControllerIpAddress to set
+	 */
+	public void setDomainControllerIpAddress(String domainControllerIpAddress)
+	{
+		this.domainControllerIpAddress = domainControllerIpAddress;
 	}
 
 	/**

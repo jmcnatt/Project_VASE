@@ -111,7 +111,6 @@ public class GuiActionListener implements ActionListener, ProjectConstraints
 			
 			else if (command.equalsIgnoreCase("Update on Main View"))
 			{
-				System.out.println("Fire");
 				LOG.setMainLogEnabled(item.isSelected());
 			}
 			
@@ -131,7 +130,7 @@ public class GuiActionListener implements ActionListener, ProjectConstraints
 			//File menu
 			if (command.equalsIgnoreCase("New VM"))
 			{
-				new GuiDeployWizard(main.engine, GuiDeployWizard.SINGLE_VM_MODE, null);
+				new DeployWizard(main, DeployWizard.SINGLE_VM_MODE, null);
 			}
 			
 			else if (command.equalsIgnoreCase("Save Settings"))
@@ -142,7 +141,7 @@ public class GuiActionListener implements ActionListener, ProjectConstraints
 			
 			else if (command.equalsIgnoreCase("Export Last Deployment"))
 			{
-				main.engine.exportLastDeployment(SETTINGS_READER.getLastDeployment());
+				main.engine.exportLastDeployment(SETTINGS_READER.getLastDeployment(), main);
 			}
 			
 			else if (command.equalsIgnoreCase("Logoff"))
@@ -162,12 +161,12 @@ public class GuiActionListener implements ActionListener, ProjectConstraints
 			//Deploy menu
 			else if (command.equalsIgnoreCase("New Deployment Group"))
 			{
-				new GuiDeployWizard(main.engine, GuiDeployWizard.GROUP_VM_MODE, null);
+				new DeployWizard(main, DeployWizard.GROUP_VMS_MODE, null);
 			}
 			
 			else if (command.equalsIgnoreCase("New Deployment Team"))
 			{
-				new GuiDeployWizard(main.engine, GuiDeployWizard.TEAM_MODE, null);
+				new DeployWizard(main, DeployWizard.TEAM_VMS_MODE, null);
 			}
 			
 			//VM Menu

@@ -31,14 +31,7 @@ public class AboutDialog extends GuiDialog implements ActionListener
 	 */
 	public AboutDialog(GuiWindow parent)
 	{
-		super(parent);
-		setTitle("About VASE Deploy");
-		setSize(DIM_DIALOG_ABOUT_MAIN);
-		getContentPane().setPreferredSize(DIM_DIALOG_ABOUT_MAIN);
-		getContentPane().setMaximumSize(DIM_DIALOG_ABOUT_MAIN);
-		getContentPane().setMinimumSize(DIM_DIALOG_ABOUT_MAIN);
-		setLocationRelativeTo(null);
-		setResizable(false);
+		super(parent, "About VASE Deploy", DIM_DIALOG_ABOUT_MAIN);
 		
 		makeItems();
 		makePanels();
@@ -52,7 +45,7 @@ public class AboutDialog extends GuiDialog implements ActionListener
 	 */
 	private void makeItems()
 	{
-		jbConfirm = createDialogButton("OK");
+		jbConfirm = Utilities.createButton("OK", true);
 		jbConfirm.addActionListener(this);
 		
 		jtaAbout = new JTextArea();
@@ -62,7 +55,7 @@ public class AboutDialog extends GuiDialog implements ActionListener
 		jtaAbout.setOpaque(false);
 		jtaAbout.setLineWrap(true);
 		jtaAbout.setWrapStyleWord(true);
-		jtaAbout.setFont(FONT_DEPLOY_SUBLABEL);
+		jtaAbout.setFont(FONT_DEPLOY_LABEL);
 		setAboutText();
 	}
 	

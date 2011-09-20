@@ -3,7 +3,6 @@
  */
 package vase.client.deploy;
 
-import java.awt.Dimension;
 import java.util.ArrayList;
 
 import javax.swing.JLabel;
@@ -76,7 +75,7 @@ public class GuiDeploymentTab extends Tab
 	{
 		deployment.removeAll();
 		deployment.update(deployedVMs);
-		deployment.setPreferredSize(new Dimension((int) DIM_MAIN_DEPLOYMENT_TAB_ENTRY.getWidth(), (deployedVMs.size() * 300 + 20)));
+		//deployment.setPreferredSize(new Dimension((int) DIM_MAIN_DEPLOYMENT_TAB_ENTRY.getWidth(), (deployedVMs.size() * 300 + 20)));
 		deployment.validate();
 		deployment.repaint();
 		

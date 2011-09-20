@@ -71,7 +71,7 @@ public class PopupMenuTemplate extends JPopupMenu implements ActionListener
 		
 		if (caption.equalsIgnoreCase("Deploy") && template != null)
 		{
-			new GuiDeployWizard(engine, GuiDeployWizard.CHOOSEN_VM_MODE, template);
+			new DeployWizard(engine.main, DeployWizard.TEMPLATE_VM_MODE, template);
 		}
 	}
 }

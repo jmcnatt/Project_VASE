@@ -4,6 +4,7 @@
 package vase.client.deploy;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.ArrayList;
 
@@ -60,9 +61,14 @@ public class GuiDeploymentPanel extends JPanel
 			GuiDeploymentTabEntry panel = new GuiDeploymentTabEntry(deployed);
 			add(panel);
 			mainLayout.putConstraint(SpringLayout.NORTH, panel, (count * 300) + 20, SpringLayout.NORTH, this);
-			mainLayout.putConstraint(SpringLayout.WEST, panel, -275, SpringLayout.HORIZONTAL_CENTER, this);
+			mainLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, panel, 0, SpringLayout.HORIZONTAL_CENTER, this);
 			
 			count++;
 		}
+		
+		Dimension size = new Dimension(560, (320 * count));
+		setPreferredSize(size);
+		setMaximumSize(size);
+		setMinimumSize(size);
 	}
 }

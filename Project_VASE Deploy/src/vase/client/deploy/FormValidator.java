@@ -3,7 +3,7 @@
  */
 package vase.client.deploy;
 
-import java.awt.Frame;
+import java.awt.Container;
 import java.util.regex.Pattern;
 
 import javax.swing.JOptionPane;
@@ -171,7 +171,7 @@ public class FormValidator
 	 * @see FormValidator#DEFAULT_GATEWAY_INVALID
 	 * @see FormValidator#DNS_ADDRESS_INVALID
 	 */
-	public static void showMessage(int messageCode, Frame parent)
+	public static void showMessage(int messageCode, Container parent)
 	{
 		String message = "Error: ";
 		

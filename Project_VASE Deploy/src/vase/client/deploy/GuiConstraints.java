@@ -73,7 +73,7 @@ public interface GuiConstraints
 	 * Dimensions for the AboutDialog content pane
 	 * @see AboutDialog
 	 */
-	Dimension DIM_DIALOG_ABOUT_MAIN = new Dimension(400, 325);
+	Dimension DIM_DIALOG_ABOUT_MAIN = new Dimension(400, 370);
 	
 	/**
 	 * Dimensions for the AboutDialog north panel
@@ -265,7 +265,7 @@ public interface GuiConstraints
 	 * Deploy wizard center labels
 	 * @see GuiDeployWizard
 	 */
-	Font FONT_DEPLOY_SUBLABEL = new Font("Tahoma", Font.PLAIN, 12);
+	Font FONT_DEPLOY_LABEL = new Font("Tahoma", Font.PLAIN, 12);
 	
 	/**
 	 * Deploy wizard component labels for fields
@@ -291,4 +291,49 @@ public interface GuiConstraints
 	 * @see TabbedPane
 	 */
 	String[] COLUMN_HEADINGS = {" ", "Name", "Operating System", "Team", "Power Status", "CPU Usage", "Mem Usage", "Host", "IP Address", "Hostname", "Notes"};
+	
+	//Text for Deploy Wizard
+	
+	/**
+	 * Welcome message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_WELCOME = String.format("<html><center>Welcome to the VASE Deployment Wizard.<br />" + 
+					 "Please select the number of Virtual Machines to deploy</center></html>");
+	
+	/**
+	 * SelectOS message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_SELECTOS = String.format("<html><center>Select the Operating System of the guest Virtual Machine</center></html>");
+	
+	/**
+	 * Guest Information message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_GUESTINFO = String.format("<html><center>Enter the guest Virtual Machine information</center></html>");
+	
+	/**
+	 * Configure Windows Server message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_WINDOWS_SERVER = String.format("<html><center>Select serivces and settings to be loaded on Windows Server</center></html>");
+	
+	/**
+	 * Configure Windows client message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_WINDOWS_CLIENT = String.format("<html><center>Select services and settings to be loaded on Windows</center></html");
+	
+	/**
+	 * Configure linux/bsd server message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_LINUX_SERVER = String.format("<html><center>Select services and settings to be loaded on the Linux/BSD Server</center></html");
+	
+	/**
+	 * Configure linux/bsd client message
+	 * @see GuiDeployWizard
+	 */
+	String DEPLOY_LINUX_CLIENT = String.format("<html><center>Select services and settings to be loaded on the Linux/BSD Client</center></html");
 }

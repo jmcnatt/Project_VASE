@@ -93,6 +93,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the name of the virtual machine
 	 * @return the name
 	 */
 	public String getName()
@@ -101,6 +102,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the name of the virtual machine
 	 * @param name the name to set
 	 */
 	public void setName(String name)
@@ -109,6 +111,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the name of the guest operating system
 	 * @return the guestOS
 	 */
 	public String getGuestOS()
@@ -117,6 +120,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the guest operating system
 	 * @param guestOS the guestOS to set
 	 */
 	public void setGuestOS(String guestOS)
@@ -125,6 +129,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the IP address of the virtual machine
 	 * @return the ipAddr
 	 */
 	public String getIpAddr()
@@ -133,6 +138,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the IP address of the virtual machine
 	 * @param ipAddr the ipAddr to set
 	 */
 	public void setIpAddr(String ipAddr)
@@ -141,6 +147,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the host name of the virtual machine
 	 * @return the hostName
 	 */
 	public String getHostName()
@@ -149,6 +156,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the hostname of the virtual machine
 	 * @param hostName the hostName to set
 	 */
 	public void setHostName(String hostName)
@@ -157,6 +165,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the memory usage of the virtual machine
 	 * @return the memUsage
 	 */
 	public String getMemUsage()
@@ -165,6 +174,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the memory usage of the virtual machine
 	 * @param memUsage the memUsage to set
 	 */
 	public void setMemUsage(String memUsage)
@@ -173,6 +183,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the CPU usage of the virtual machine
 	 * @return the cpuUsage
 	 */
 	public String getCpuUsage()
@@ -181,6 +192,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the cpu usage of the virtual machine
 	 * @param cpuUsage the cpuUsage to set
 	 */
 	public void setCpuUsage(String cpuUsage)
@@ -189,6 +201,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the host this virtual machine resides on
 	 * @return the host
 	 */
 	public String getHost()
@@ -197,6 +210,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the host this virtual machine resides on
 	 * @param host the host to set
 	 */
 	public void setHost(String host)
@@ -205,6 +219,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the power status of the virtual machine
 	 * @return the powerStatus
 	 */
 	public String getPowerStatus()
@@ -213,6 +228,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the power status of the virtual machine
 	 * @param powerStatus the powerStatus to set
 	 */
 	public void setPowerStatus(String powerStatus)
@@ -221,6 +237,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the description
 	 * @return the description
 	 */
 	public String getDescription()
@@ -229,6 +246,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the description
 	 * @param description the description to set
 	 */
 	public void setDescription(String description)
@@ -237,6 +255,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Gets the icon
 	 * @return the icon
 	 */
 	public ImageIcon getIcon()
@@ -245,6 +264,7 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
+	 * Sets the icon
 	 * @param icon the icon to set
 	 */
 	public void setIcon(ImageIcon icon)
@@ -253,7 +273,8 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
-	 * @return the flag
+	 * Gets the virtual machine's team
+	 * @return the team
 	 */
 	public String getTeam()
 	{
@@ -261,7 +282,8 @@ public class VirtualMachineExt implements ProjectConstraints
 	}
 
 	/**
-	 * @param flag the flag to set
+	 * Sets the virtual machine's team
+	 * @param team the team to set
 	 */
 	public void setFlag(String team)
 	{

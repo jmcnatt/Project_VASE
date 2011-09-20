@@ -52,6 +52,7 @@ public class LoginSplash extends GuiWindow implements ActionListener
 		getContentPane().setMaximumSize(DIM_MAIN_LOGIN_SPLASH);
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
+		setResizable(false);
 		
 		makeItems();
 		makePanels();
@@ -80,7 +81,7 @@ public class LoginSplash extends GuiWindow implements ActionListener
 		jtaInfo.setFocusable(false);
 		jtaInfo.setCursor(null);
 		jtaInfo.setOpaque(false);
-		jtaInfo.setFont(FONT_DEPLOY_SUBLABEL);
+		jtaInfo.setFont(FONT_DEPLOY_LABEL);
 		setInfoText();
 	}
 	

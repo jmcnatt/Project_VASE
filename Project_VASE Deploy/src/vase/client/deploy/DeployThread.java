@@ -228,21 +228,23 @@ class DeployThread extends ThreadExt
 					
 					//Step 4 - Run them
 					int count = 0;
-					sleep(10000);
+					sleep(5000);
 					for (Script script : newVM.scripts)
 					{
 						//Wait until it powers up and VMware Tools is ready
 						do
 						{
-							sleep(10000);
+							sleep(5000);
 						} while (vm.getSummary().guest.toolsStatus.toString().equalsIgnoreCase("toolsNotRunning"));
 						
-						LOG.write("Ready to install script on " + guestName, true);
+						LOG.write("Ready to copy script onto " + guestName, true);
+						LOG.write("Invoking script...Please Wait");
 						script.invoke();
 						
 						//First script requires a reboot, set sleep time accordingly
 						if (count == 0) sleep(30000);							
-						else sleep(10000);
+						else sleep(5000);
+						count++;
 					}
 					
 					//save the team number in the map

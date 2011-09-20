@@ -4,11 +4,11 @@
 package vase.client.deploy;
 
 import java.awt.Dialog;
+import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.image.BufferedImage;
 
 import javax.imageio.ImageIO;
-import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.UIManager;
 
@@ -25,11 +25,17 @@ public class GuiDialog extends JDialog implements GuiConstraints, ProjectConstra
 	 * Main Constructor. Sets the modality type
 	 * @param owner the parent frame
 	 */
-	public GuiDialog(Frame owner)
+	public GuiDialog(Frame owner, String title, Dimension preferredSize)
 	{
 		super(owner);
-		this.setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		setPreferredSize(preferredSize);
+		setSize(preferredSize);
+		setTitle(title);
+		setModalityType(Dialog.ModalityType.APPLICATION_MODAL);
+		setResizable(false);
+		setLocationRelativeTo(null);
 		BufferedImage image = null;
+		
 		try
 		{
 			image = ImageIO.read(getClass().getResource("/images/icon.png"));
@@ -41,20 +47,5 @@ public class GuiDialog extends JDialog implements GuiConstraints, ProjectConstra
 		{
 			LOG.write("Unable to load WindowsUI\n" + e.getStackTrace(), true);
 		}
-	}
-	
-	/**
-	 * Creates a JButton
-	 * @param text the caption on the button
-	 * @return button a formatted JButton for Dialogs
-	 */
-	public JButton createDialogButton(String text)
-	{
-		JButton button = new JButton(text);
-		button.setPreferredSize(DIM_DEPLOY_BUTTON);
-		button.setMaximumSize(DIM_DEPLOY_BUTTON);
-		button.setMinimumSize(DIM_DEPLOY_BUTTON);
-		
-		return button;
 	}
 }

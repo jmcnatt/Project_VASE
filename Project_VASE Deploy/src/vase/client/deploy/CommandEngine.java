@@ -3,6 +3,8 @@
  */
 package vase.client.deploy;
 
+import java.awt.Container;
+import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -548,14 +550,15 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 	 * Exports the Last Deployment to an html file
 	 * Called by the GuiMain in an action event
 	 */
-	public void exportLastDeployment(ArrayList<DeployedVirtualMachine> deployed)
+	public void exportLastDeployment(ArrayList<DeployedVirtualMachine> deployed, Container parent)
 	{
 		if (deployed.size() != 0)
 		{
-			
 			FileSystemView fsv = FileSystemView.getFileSystemView();
 			JFileChooser chooser = new JFileChooser(fsv.getRoots()[0]);
-			int choice = chooser.showSaveDialog(main);
+			chooser.addChoosableFileFilter(new ReportGeneratorFileFilter());
+			chooser.setSelectedFile(new File("report.html"));
+			int choice = chooser.showSaveDialog(parent);
 			if (choice == JFileChooser.APPROVE_OPTION)
 			{
 				try
@@ -777,18 +780,21 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 			//Refresh VirtualMachines
 			if (rootDir == null)
 			{
+				boolean found = false;
 				ManagedEntity[] folders = dc.getVmFolder().getChildEntity();
 				for (ManagedEntity each : folders)
 				{
 					if (each.getName().equals(ROOT_FOLDER) && each instanceof Folder)
 					{
 						rootDir = (Folder) each;
+						found = true;
 					}
-					
-					else
-					{
-						LOG.write("Error: Could not find root directory");
-					}
+				}
+				
+				if (!found)
+				{
+					LOG.write("Error: Could not find root directory.  Check the deploy.conf file and ensure " +
+							"the root project directory exists");
 				}
 			}
 			
@@ -805,18 +811,21 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 			//Refresh Templates
 			if (templateDir == null)
 			{
+				boolean found = false;
 				ManagedEntity[] folders = dc.getVmFolder().getChildEntity();
 				for (ManagedEntity each : folders)
 				{
 					if (each.getName().equals(TEMPLATE_FOLDER))
 					{
 						templateDir = (Folder) each;
+						found = true;
 					}
+				}
 					
-					else
-					{
-						LOG.write("Error: Could not find template directory");
-					}
+				if (!found)
+				{
+					LOG.write("Error: Could not find template directory. Check the deploy.conf file and ensure " +
+							"the template directory exists");
 				}
 			}
 			

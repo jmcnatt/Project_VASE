@@ -42,7 +42,7 @@ import javax.swing.SpringLayout;
  * <li>Review and finish</li>
  * <br />
  * This class handles the entire wizard.  Create an object of this class to load the
- * wizard, dipose the frame when complete.
+ * wizard, dispose the frame when complete.
  * <br />
  * <strong>Note: </strong>Extends GuiWindow
  * @author James McNatt & Brenton Kapral
@@ -1580,7 +1580,7 @@ public class GuiDeployWizard extends GuiWindow implements ActionListener, ItemLi
 				
 				else if (button.getActionCommand().equalsIgnoreCase("Save"))
 				{
-					engine.exportLastDeployment(virtualMachines);
+					engine.exportLastDeployment(virtualMachines, this);
 				}
 			} //end if source is instanceof JButton
 		}

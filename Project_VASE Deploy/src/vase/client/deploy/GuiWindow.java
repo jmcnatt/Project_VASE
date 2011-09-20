@@ -180,7 +180,7 @@ public class GuiWindow extends JFrame implements ProjectConstraints, GuiConstrai
 	{
 		JLabel label = new JLabel(text);
 		label.setOpaque(false);
-		label.setFont(FONT_DEPLOY_SUBLABEL);
+		label.setFont(FONT_DEPLOY_LABEL);
 		
 		return label;
 	}
@@ -251,7 +251,7 @@ public class GuiWindow extends JFrame implements ProjectConstraints, GuiConstrai
 	public JComboBox createDeployComboBox()
 	{
 		JComboBox box = new JComboBox();
-		box.setFont(FONT_DEPLOY_SUBLABEL);
+		box.setFont(FONT_DEPLOY_LABEL);
 		
 		return box;
 	}
@@ -264,7 +264,7 @@ public class GuiWindow extends JFrame implements ProjectConstraints, GuiConstrai
 	public JComboBox createDeployComboBox(Object[] items)
 	{
 		JComboBox box = new JComboBox(items);
-		box.setFont(FONT_DEPLOY_SUBLABEL);
+		box.setFont(FONT_DEPLOY_LABEL);
 		
 		return box;
 	}

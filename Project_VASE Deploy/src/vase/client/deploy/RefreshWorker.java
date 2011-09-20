@@ -34,7 +34,7 @@ class RefresherWorker extends Thread implements ProjectConstraints
 			try
 			{
 				sleep(REFRESH_INTERVAL * 1000);
-				new RefreshThread(main).start();
+				new RefreshThread(main);
 			}
 			
 			catch (InterruptedException e)

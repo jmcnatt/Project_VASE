@@ -26,7 +26,7 @@ public class ListListener extends MouseAdapter implements ListSelectionListener
 	private List jlTemplates;
 	private PopupMenuVM vmMenu;
 	private PopupMenuTemplate templateMenu;
-	private CommandEngine engine;
+	private GuiMain main;
 	
 	/**
 	 * Main constructor
@@ -35,13 +35,13 @@ public class ListListener extends MouseAdapter implements ListSelectionListener
 	 * @param jlVMs the vms list
 	 * @param engine the command engine for deployment commands
 	 */
-	public ListListener(List jlTemplates, List jlVMs, CommandEngine engine)
+	public ListListener(List jlTemplates, List jlVMs, GuiMain main)
 	{
-		this.engine = engine;
+		this.main = main;
 		this.jlVMs = jlVMs;
 		this.jlTemplates = jlTemplates;
-		vmMenu = new PopupMenuVM(engine);
-		templateMenu = new PopupMenuTemplate(engine);
+		vmMenu = new PopupMenuVM(main.engine);
+		templateMenu = new PopupMenuTemplate(main.engine);
 	}
 	
 	/**
@@ -100,7 +100,7 @@ public class ListListener extends MouseAdapter implements ListSelectionListener
 				if (list.getSelectedIndex() != -1) template = (Template) list.getModel().getElementAt(list.getSelectedIndex());
 				if (template != null)
 				{
-					new GuiDeployWizard(engine, GuiDeployWizard.CHOOSEN_VM_MODE, template);
+					new DeployWizard(main, DeployWizard.TEMPLATE_VM_MODE, template);
 				}
 			}
 		}
@@ -114,7 +114,7 @@ public class ListListener extends MouseAdapter implements ListSelectionListener
 				if (list.getSelectedIndex() != -1) vm = (VirtualMachineExt) list.getSelectedValue();
 				if (vm != null)
 				{
-					engine.launchConsole(vm.getVM());
+					main.engine.launchConsole(vm.getVM());
 				}
 			}
 		}
