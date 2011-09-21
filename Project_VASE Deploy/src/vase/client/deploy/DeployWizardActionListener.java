@@ -77,6 +77,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 			}
 			
 			main.stepTotal = (main.osTotal * 3) + 2;
+			main.stepNumber++;
 			main.updateTitleLabel("Select Virtual Machine Operating System");
 			main.updateSubTitleLabel(true);
 			main.center.show(DeployWizardCenterPanel.SELECTOS);
@@ -159,6 +160,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 			}
 			
 			//move on to the next step
+			main.stepNumber++;
 			main.updateTitleLabel("Configure Settings for " + osName);		
 			main.updateSubTitleLabel(true);
 			main.center.show(DeployWizardCenterPanel.GUEST_INFO);
@@ -240,6 +242,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				
 				//move on to the next step
 				String chosenOS = virtualMachines.get(main.osNumber - 1).getOsName();
+				main.stepNumber++;
 				main.updateTitleLabel("Configure " + chosenOS + " Services");
 				main.updateSubTitleLabel(true);				
 				
@@ -344,6 +347,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				//determine if the wizard is finished
 				if (main.osNumber == main.osTotal)
 				{
+					main.stepNumber++;
 					main.updateSubTitleLabel(false);
 					main.updateTitleLabel("Virtual Machines Ready to Deploy");
 					main.center.show(DeployWizardCenterPanel.SUMMARY);
@@ -359,6 +363,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				else
 				{
 					main.osNumber++;
+					main.stepNumber++;
 					main.updateSubTitleLabel(true);
 					main.updateTitleLabel("Select Virtual Machine Operating System");
 					main.center.resetFields();
@@ -385,7 +390,6 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 		
 		else if (source == main.south.jbNext)
 		{
-			main.stepNumber++;
 			next(main.center.currentState);
 		}
 		
