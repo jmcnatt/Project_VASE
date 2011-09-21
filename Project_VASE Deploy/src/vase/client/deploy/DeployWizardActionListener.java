@@ -239,9 +239,9 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				}
 				
 				//move on to the next step
-				main.updateSubTitleLabel(true);
 				String chosenOS = virtualMachines.get(main.osNumber - 1).getOsName();
 				main.updateTitleLabel("Configure " + chosenOS + " Services");
+				main.updateSubTitleLabel(true);				
 				
 				if (main.chosenOSCategory.equals(WINDOWS))
 				{
@@ -269,7 +269,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 						main.center.show(DeployWizardCenterPanel.LINUX_SERVER);
 					}
 				}
-				
+			
 				main.south.jbNext.requestFocus();
 			}
 		}
@@ -359,10 +359,10 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				else
 				{
 					main.osNumber++;
-					main.center.show(DeployWizardCenterPanel.SELECTOS);
-					main.center.resetFields();
 					main.updateSubTitleLabel(true);
 					main.updateTitleLabel("Select Virtual Machine Operating System");
+					main.center.resetFields();
+					main.center.show(DeployWizardCenterPanel.SELECTOS);
 					main.center.osPanel.jcbCategory.requestFocus();
 				}
 			}
