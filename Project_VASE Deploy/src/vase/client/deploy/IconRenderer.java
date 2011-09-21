@@ -15,7 +15,7 @@ public class IconRenderer
 {
 	//Matching Patterns
 	private String CENTOS_PATTERN = "CentOS";
-	private String WINDOWS_PATTERN = "Microsoft";
+	private String WINDOWS_PATTERN = "Windows";
 	private String UBUNTU_PATTERN = "Ubuntu";
 	private String FREE_BSD_PATTERN = "FreeBSD";
 	
@@ -27,38 +27,52 @@ public class IconRenderer
 	public ImageIcon getIcon(String guestOS)
 	{
 		ImageIcon icon = null;
-		try
+		
+		if (guestOS != null)
 		{
-			String[] os = guestOS.split(" ");
-			if (os[0].equalsIgnoreCase(WINDOWS_PATTERN) || os[0].equalsIgnoreCase("Windows"))
+			try
 			{
-				icon = new ImageIcon(getClass().getResource("/images/windows-logo.png"));
+				if (guestOS.indexOf(WINDOWS_PATTERN) != -1)
+				{
+					icon = new ImageIcon(getClass().getResource("/images/windows-logo.png"));
+				}
+				
+				else if (guestOS.indexOf(CENTOS_PATTERN) != -1)
+				{
+					icon = new ImageIcon(getClass().getResource("/images/centos-logo.png"));
+				}
+				
+				else if (guestOS.indexOf(UBUNTU_PATTERN) != -1)
+				{
+					icon = new ImageIcon(getClass().getResource("/images/ubuntu-logo.png"));
+				}
+				
+				else if (guestOS.indexOf(FREE_BSD_PATTERN) != -1)
+				{
+					icon = new ImageIcon(getClass().getResource("/images/freebsd-logo.png"));
+				}
+				
+				else if (guestOS.indexOf("Other") != -1)
+				{
+					icon = new ImageIcon(getClass().getResource("/images/other-linux.png"));
+				}
+				
+				else
+				{
+					icon = new ImageIcon(getClass().getResource("/images/unknown.png"));
+				}
 			}
 			
-			else if (os[0].equalsIgnoreCase(CENTOS_PATTERN))
+			catch (Exception e)
 			{
-				icon = new ImageIcon(getClass().getResource("/images/centos-logo.png"));
-			}
-			
-			else if (os[0].equalsIgnoreCase(UBUNTU_PATTERN))
-			{
-				icon = new ImageIcon(getClass().getResource("/images/ubuntu-logo.png"));
-			}
-			
-			else if (os[0].equalsIgnoreCase(FREE_BSD_PATTERN))
-			{
-				icon = new ImageIcon(getClass().getResource("/images/freebsd-logo.png"));
-			}
-			
-			else
-			{
-				icon = new ImageIcon(getClass().getResource("/images/blank.png"));
+				icon = new ImageIcon(getClass().getResource("/images/unknown.png"));
+				e.printStackTrace();
 			}
 		}
 		
-		catch (Exception e)
+		else
 		{
-			icon = new ImageIcon(getClass().getResource("/images/blank.png"));
+			icon = new ImageIcon(getClass().getResource("/images/unknown.png"));
 		}
 		
 		return icon;

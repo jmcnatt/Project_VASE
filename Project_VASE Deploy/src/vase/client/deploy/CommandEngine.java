@@ -848,6 +848,11 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 			}
 		}
 		
+		catch (NullPointerException e)
+		{
+			disconnect();
+		}
+		
 		catch (RemoteException e)
 		{
 			disconnect();

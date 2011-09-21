@@ -45,6 +45,8 @@ public class Template implements ProjectConstraints
 		
 		//Set the Icon
 		icon = new ImageIcon(getClass().getResource("/images/template-icon-small.png"));
+		
+		gatherDeployData();
 	}
 
 	/**
@@ -178,7 +180,6 @@ public class Template implements ProjectConstraints
 	 */
 	public String getOsCategory()
 	{
-		gatherDeployData();
 		return category;
 	}
 	
@@ -188,7 +189,6 @@ public class Template implements ProjectConstraints
 	 */
 	public String getOsType()
 	{
-		gatherDeployData();
 		return type;
 	}
 }

@@ -238,7 +238,6 @@ class DeployThread extends ThreadExt
 						} while (vm.getSummary().guest.toolsStatus.toString().equalsIgnoreCase("toolsNotRunning"));
 						
 						LOG.write("Ready to copy script onto " + guestName, true);
-						LOG.write("Invoking script...Please Wait");
 						script.invoke();
 						
 						//First script requires a reboot, set sleep time accordingly

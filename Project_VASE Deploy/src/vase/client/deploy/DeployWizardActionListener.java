@@ -76,7 +76,7 @@ public class DeployWizardActionListener implements ActionListener, ProjectConstr
 				virtualMachines.get(i).setTeam((String) main.center.welcomePanel.jcbTeam.getSelectedItem());
 			}
 			
-			main.stepTotal = main.osTotal * 3 + 2;
+			main.stepTotal = (main.osTotal * 3) + 2;
 			main.updateTitleLabel("Select Virtual Machine Operating System");
 			main.updateSubTitleLabel(true);
 			main.center.show(DeployWizardCenterPanel.SELECTOS);
