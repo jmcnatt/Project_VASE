@@ -32,9 +32,9 @@ public class GuiWindowListener extends WindowAdapter
 			}
 		}
 		
-		else if (event.getSource() instanceof GuiDeployWizard)
+		else if (event.getSource() instanceof DeployWizard)
 		{
-			GuiDeployWizard.LOG.write("Deployment Wizard cancelled");
+			DeployWizard.LOG.write("Deployment Wizard cancelled");
 		}
 	}
 }

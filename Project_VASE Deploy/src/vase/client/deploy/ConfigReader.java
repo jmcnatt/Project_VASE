@@ -31,9 +31,9 @@ public class ConfigReader implements ProjectConstraints
 	private String hostUsername;
 	private String hostPassword;
 	private String pathToVMRC;
-	private int maximumTeams = 5;
 	private int maximumDeployment = 7;
 	private int accountFiles = 10;
+	private ArrayList<String> teams;
 	private ArrayList<String> windows_client;
 	private ArrayList<String> windows_server;
 	private ArrayList<String> rpm_client;
@@ -51,6 +51,7 @@ public class ConfigReader implements ProjectConstraints
 	private static final int DEBIAN_CLIENT = 6;
 	private static final int DEBIAN_SERVER = 7;
 	private static final int BSD = 8;
+	private static final int TEAMS = 9;
 
 	/**
 	 * Main Constructor
@@ -68,6 +69,7 @@ public class ConfigReader implements ProjectConstraints
 		debian_client = new ArrayList<String>();
 		debian_server = new ArrayList<String>();
 		bsd = new ArrayList<String>();
+		teams = new ArrayList<String>();
 		
 		try
 		{
@@ -163,7 +165,7 @@ public class ConfigReader implements ProjectConstraints
 	 */
 	public int getRefreshInterval()
 	{
-		return refreshInterval ;
+		return refreshInterval;
 	}
 	
 	/**
@@ -191,13 +193,8 @@ public class ConfigReader implements ProjectConstraints
 	 */
 	public String[] getTeams()
 	{
-		String[] teams = new String[maximumTeams];
-		for (int i = 1; i <= maximumTeams; i++)
-		{
-			teams[i - 1] = "Team " + i;
-		}
-		
-		return teams;
+		String[] teamNames = new String[teams.size()];
+		return teams.toArray(teamNames);	
 	}
 	
 	/**
@@ -308,6 +305,7 @@ public class ConfigReader implements ProjectConstraints
 	 * <li>[linux debian client]</li>
 	 * <li>[linux debian server]</li>
 	 * <li>[bsd]</li>
+	 * <li>[teams]</li>
 	 * @param line the line in the config file to parse
 	 */
 	private void parseLine(String line)
@@ -352,6 +350,11 @@ public class ConfigReader implements ProjectConstraints
 			currentBlock = BSD;
 		}
 		
+		else if (line.equalsIgnoreCase("[teams]"))
+		{
+			currentBlock = TEAMS;
+		}
+		
 		else
 		{
 			switch (currentBlock)
@@ -390,11 +393,6 @@ public class ConfigReader implements ProjectConstraints
 					else if (variable.equalsIgnoreCase("ACCOUNT_CSV_COUNT"))
 					{
 						accountFiles = Integer.parseInt(value);
-					}
-					
-					else if (variable.equalsIgnoreCase("MAXTEAMS"))
-					{
-						maximumTeams = Integer.parseInt(value);
 					}
 					
 					else if (variable.equalsIgnoreCase("DEFAULT_WINDOWS_PASSWORD"))
@@ -464,6 +462,12 @@ public class ConfigReader implements ProjectConstraints
 				case BSD:
 				{
 					bsd.add(line);
+					break;
+				}
+				
+				case TEAMS:
+				{
+					teams.add(line);
 					break;
 				}
 			}				

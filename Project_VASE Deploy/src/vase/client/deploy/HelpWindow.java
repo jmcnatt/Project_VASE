@@ -31,7 +31,7 @@ public class HelpWindow extends GuiWindow implements HyperlinkListener
 	 */
 	public HelpWindow()
 	{
-		super("VASE Connect Help");
+		super("VASE Deploy Help");
 		setResizable(false);
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setSize(DIM_HELP_CONTENT_PANE);

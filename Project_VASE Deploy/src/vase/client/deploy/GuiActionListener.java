@@ -274,7 +274,7 @@ public class GuiActionListener implements ActionListener, ProjectConstraints
 				if (isListSelected(main.jListTemplates))
 				{
 					Template template = (Template) main.jListTemplates.getSelectedValue();
-					new GuiDeployWizard(main.engine, GuiDeployWizard.CHOOSEN_VM_MODE, template);
+					new DeployWizard(main, DeployWizard.TEMPLATE_VM_MODE, template);
 				}
 				
 				else

@@ -7,11 +7,6 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.SwingUtilities;
-import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
-
-import com.vmware.vim25.mo.Folder;
-import com.vmware.vim25.mo.ManagedEntity;
 
 /**
  * Refresh Thread Class
@@ -43,25 +38,39 @@ public class RefreshThread extends ThreadExt
 		main.engine.refresh();
 		
 		//Update Lists
-		try
-		{
-			//Update Lists
-			updateLists();
-			
-			//Update Table
-			updateTable();
-			
-			DefaultMutableTreeNode top = (DefaultMutableTreeNode) main.datacenterTree.getModel().getRoot();
-			Folder mainFolder = main.engine.dc.getVmFolder();
-			refreshChildEntities(mainFolder, top);
-			main.datacenterTree.expandAll(true);
-		}
+		updateLists();
 		
-		catch (Exception e)
+		//Update Table
+		updateTable();
+		
+		//Update Tree
+		updateTree();
+	}
+	
+	/**
+	 * Updates the Tree on the Summary Tab
+	 * Removes all elements, rebuilds and expands the tree
+	 */
+	private void updateTree()
+	{
+		SwingUtilities.invokeLater(new Runnable() 
 		{
-			LOG.write("Error Updating Data", true);
-			e.printStackTrace();
-		}
+			public void run()
+			{
+				try
+				{
+					main.datacenterTree.removeAll();
+					main.datacenterTree.build();
+					main.datacenterTree.expandAll(true);
+				}
+				
+				catch (Exception e)
+				{
+					LOG.write("Error Updating Data", true);
+					e.printStackTrace();
+				}
+			}
+		});
 	}
 	
 	/**
@@ -140,112 +149,5 @@ public class RefreshThread extends ThreadExt
 				}
 			}
 		});
-	}
-	
-	/**
-	 * Scans for changes in the tree's child entities
-	 * @param thisFolder the current directory
-	 * @param top the treenode representation of the directory
-	 * @throws Exception handled by the RefreshThread in GuiMain
-	 */
-	private void refreshChildEntities(Folder thisFolder, DefaultMutableTreeNode top)
-	{
-		try
-		{
-			ManagedEntity[] children = thisFolder.getChildEntity();
-			ArrayList<DefaultMutableTreeNode> nodes = new ArrayList<DefaultMutableTreeNode>();
-			
-			for (int i = 0; i < main.datacenterTree.getModel().getChildCount(top); i++)
-			{
-				nodes.add((DefaultMutableTreeNode) top.getChildAt(i));
-			}
-			
-			compare(children, nodes, top);
-			
-			for (DefaultMutableTreeNode thisNode : nodes)
-			{
-				if (thisNode.getUserObject() instanceof Folder)
-				{
-					refreshChildEntities((Folder) thisNode.getUserObject(), thisNode);
-				}
-			}
-		}
-		
-		catch (NullPointerException e)
-		{
-			LOG.write("Error Refreshing Data: Could not gather VM list from datacenter", true);
-		}
-		
-		catch (Exception e)
-		{
-			e.printStackTrace();
-		}
-	}
-	
-	/**
-	 * Compares a ManagedEntity object to the current TreeNode.  If they are not the
-	 * same, it adds
-	 * @param object
-	 * @param current
-	 * @param top
-	 */
-	private void compare(ManagedEntity[] objects, ArrayList<DefaultMutableTreeNode> nodes, 
-			DefaultMutableTreeNode top)
-	{
-		//Check to Add
-		for (ManagedEntity thisEntity : objects)
-		{
-			boolean found = false;
-			for (DefaultMutableTreeNode thisNode : nodes)
-			{
-				try
-				{
-					ManagedEntity userObject = (ManagedEntity) thisNode.getUserObject(); 
-					if (thisEntity.getName().equals(userObject.getName()))
-					{
-						found = true;
-					}
-				}
-				
-				catch (RuntimeException e)
-				{
-					found = true;
-				}
-			}
-			
-			if (!found)
-			{
-				top.add(new DefaultMutableTreeNode(thisEntity));
-				((DefaultTreeModel) main.datacenterTree.getModel()).nodeStructureChanged(top);
-			}
-		}
-		
-		//Check to Remove
-		for (DefaultMutableTreeNode thisNode : nodes)
-		{
-			boolean there = false;
-			for (ManagedEntity thisEntity : objects)
-			{
-				try
-				{
-					ManagedEntity userObject = (ManagedEntity) thisNode.getUserObject();
-					if (userObject.getName().equals(thisEntity.getName()))
-					{
-						there = true;
-					}
-				}
-				
-				catch (RuntimeException e)
-				{
-					there = false;
-				}
-			}
-			
-			if (!there)
-			{
-				top.remove(thisNode);
-				((DefaultTreeModel) main.datacenterTree.getModel()).nodeStructureChanged(top);
-			}
-		}
 	}
 }

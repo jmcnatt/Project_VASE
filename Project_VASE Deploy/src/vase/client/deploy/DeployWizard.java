@@ -237,7 +237,7 @@ public class DeployWizard extends GuiDialog
 		
 		if (osCountPresent)
 		{
-			label += ". Operating System " + osNumber + " of " + osTotal;
+			label += ", Operating System " + osNumber + " of " + osTotal;
 		}
 		
 		north.jlSubtitle.setText(label);
