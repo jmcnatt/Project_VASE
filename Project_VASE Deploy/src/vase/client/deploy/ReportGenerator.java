@@ -157,18 +157,24 @@ public class ReportGenerator implements ProjectConstraints
 				catch (ArrayIndexOutOfBoundsException e)
 				{
 					LOG.write(each.getVmName() + ": CSV file #" + each.getAccountsCSV()+ " not formatted correctly", true);
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 				
 				catch (FileNotFoundException e)
 				{
 					LOG.write(each.getVmName() + ": CSV file not found for report generation", true);
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 				
 				catch (Exception e)
 				{
 					LOG.write(each.getVmName() + ": Error reading csv for report generation", true);
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 				

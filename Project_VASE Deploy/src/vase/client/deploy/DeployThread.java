@@ -6,6 +6,7 @@ package vase.client.deploy;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import com.vmware.vim25.NoPermission;
 import com.vmware.vim25.VirtualDevice;
 import com.vmware.vim25.VirtualDeviceConfigSpec;
 import com.vmware.vim25.VirtualDeviceConfigSpecOperation;
@@ -89,11 +90,17 @@ class DeployThread extends ThreadExt
 			catch (RemoteException e)
 			{
 				engine.disconnect();
+				LOG.printStackTrace(e);
+				
+				e.printStackTrace();
 			}
 			
 			catch (Exception e)
 			{
 				LOG.write("Exception occured while accessing team folder", true);
+				LOG.printStackTrace(e);
+				
+				e.printStackTrace();
 			}
 		}
 		
@@ -170,6 +177,8 @@ class DeployThread extends ThreadExt
 		catch (Exception e)
 		{
 			LOG.write("Error occured while setting the VM network");
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 	}		
@@ -193,7 +202,17 @@ class DeployThread extends ThreadExt
 				VirtualMachine vm = (VirtualMachine) selectedTemplate;
 				VirtualMachineCloneSpec spec = new VirtualMachineCloneSpec();
 				VirtualMachineRelocateSpec relocate = new VirtualMachineRelocateSpec();
-				relocate.setDatastore(engine.targetDatastore.getMOR());
+				
+				try
+				{
+					relocate.setDatastore(engine.targetDatastore.getMOR());
+				}
+				
+				catch (NullPointerException e)
+				{
+					LOG.write("Invalid datastore specified. Check deploy.conf and restart VASE Deploy");
+				}
+				
 				spec.setLocation(relocate);
 				spec.setPowerOn(true);
 				spec.setTemplate(false);
@@ -256,17 +275,32 @@ class DeployThread extends ThreadExt
 			catch (ArrayIndexOutOfBoundsException e)
 			{
 				LOG.write("Error: Template Not Found after conclusion of Deployment Wizard");
+				LOG.printStackTrace(e);
+				
+				e.printStackTrace();
+			}
+			
+			catch (NoPermission e)
+			{
+				LOG.write("Error: Permission to deploy virtual machine denied");
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 			
 			catch (RemoteException e)
 			{
 				engine.disconnect();
+				LOG.printStackTrace(e);
+				
+				e.printStackTrace();
 			}
 			
 			catch (Exception e)
 			{
 				LOG.write("Exception caught in deployment", true);
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 		}

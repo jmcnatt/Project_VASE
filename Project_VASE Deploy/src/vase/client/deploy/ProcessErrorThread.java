@@ -46,6 +46,8 @@ public class ProcessErrorThread extends ThreadExt
 		
 		catch (IOException e)
 		{
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
@@ -58,6 +60,8 @@ public class ProcessErrorThread extends ThreadExt
 			
 			catch (IOException e)
 			{
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 		}

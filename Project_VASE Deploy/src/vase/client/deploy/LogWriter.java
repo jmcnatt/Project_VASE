@@ -6,6 +6,7 @@ package vase.client.deploy;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -230,5 +231,19 @@ public class LogWriter implements ProjectConstraints
 	{
 		cal = Calendar.getInstance();
 		return sdf.format(cal.getTime());
+	}
+	
+	/**
+	 * Prints the stack trace of an exception to the log file
+	 * @param e the exception whose stack trace to print
+	 */
+	public void printStackTrace(Exception e)
+	{
+		StringWriter sw = new StringWriter();
+		PrintWriter writer = new PrintWriter(sw);
+		writer.print("[" + e.getClass().getName() + "]");
+		writer.print(e.getMessage() + " \n");
+		e.printStackTrace(writer);
+		write(sw.toString(), true);
 	}
 }

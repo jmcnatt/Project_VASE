@@ -58,14 +58,17 @@ public class Tree extends JTree
 			
 			try
 			{
-				//add children
-				for (ManagedEntity node : engine.dc.getVmFolder().getChildEntity())
+				if (engine.dc.getVmFolder().getChildEntity() != null)
 				{
-					DefaultMutableTreeNode thisNode = new DefaultMutableTreeNode(node);
-					datacenter.add(thisNode);
-					if (node instanceof Folder)
+					//add children
+					for (ManagedEntity node : engine.dc.getVmFolder().getChildEntity())
 					{
-						getChildEntities((Folder) node, thisNode);
+						DefaultMutableTreeNode thisNode = new DefaultMutableTreeNode(node);
+						datacenter.add(thisNode);
+						if (node instanceof Folder)
+						{
+							getChildEntities((Folder) node, thisNode);
+						}
 					}
 				}
 			}

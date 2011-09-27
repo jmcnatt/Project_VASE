@@ -72,6 +72,8 @@ public class SettingsReader implements ProjectConstraints
 			catch (EOFException e)
 			{
 				//Info not saved
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 			
@@ -87,10 +89,12 @@ public class SettingsReader implements ProjectConstraints
 			LOG.write("\"settings.bin\" not found, loading new values", true);
 		}
 		
-		catch (IOException ioe)
+		catch (IOException e)
 		{
 			LOG.write("I/O Exception caught while loading settings.bin", true);
-			ioe.printStackTrace();
+			LOG.printStackTrace(e);
+			
+			e.printStackTrace();
 		}
 			
 		finally
@@ -105,6 +109,8 @@ public class SettingsReader implements ProjectConstraints
 				catch (Exception e)
 				{
 					LOG.write(e.getStackTrace().toString(), true);
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 			}
@@ -182,12 +188,16 @@ public class SettingsReader implements ProjectConstraints
 		catch (FileNotFoundException e)
 		{
 			LOG.write("Error: Settings file not found.");
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
 		catch (IOException e)
 		{
 			LOG.write("I/O error in writing to \"settings.bin\"\n", true);
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
@@ -202,6 +212,8 @@ public class SettingsReader implements ProjectConstraints
 				
 				catch (Exception e)
 				{
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 			}

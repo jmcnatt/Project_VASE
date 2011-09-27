@@ -66,7 +66,6 @@ public class IconRenderer
 			catch (Exception e)
 			{
 				icon = new ImageIcon(getClass().getResource("/images/unknown.png"));
-				e.printStackTrace();
 			}
 		}
 		

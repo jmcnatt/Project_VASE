@@ -62,6 +62,8 @@ public class HelpWindow extends GuiWindow implements HyperlinkListener
 		catch (IOException e)
 		{
 			LOG.write("Error loading help file");
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 	}
@@ -128,11 +130,15 @@ public class HelpWindow extends GuiWindow implements HyperlinkListener
 	    	
 	    	catch (IOException e) 
 	    	{
+	    		LOG.printStackTrace(e);
+	    		
 	    		LOG.write("Error parsing hyperlink in help file");
 	    	}
 	    	
 			catch (URISyntaxException e)
 			{
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 	    }

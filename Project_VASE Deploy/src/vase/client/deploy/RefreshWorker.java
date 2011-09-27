@@ -39,6 +39,8 @@ class RefresherWorker extends Thread implements ProjectConstraints
 			
 			catch (InterruptedException e)
 			{
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 		}

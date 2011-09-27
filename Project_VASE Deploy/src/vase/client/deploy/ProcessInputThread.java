@@ -47,6 +47,8 @@ class ProcessInputThread extends ThreadExt
 		
 		catch (IOException e)
 		{
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
@@ -58,6 +60,8 @@ class ProcessInputThread extends ThreadExt
 			}
 			catch (IOException e)
 			{
+				LOG.printStackTrace(e);
+				
 				e.printStackTrace();
 			}
 		}

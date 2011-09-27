@@ -13,6 +13,8 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
+import com.vmware.vim25.HostNetworkInfo;
+import com.vmware.vim25.HostVirtualNic;
 import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.mo.Datacenter;
 import com.vmware.vim25.mo.Datastore;
@@ -210,10 +212,13 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		catch (RemoteException e)
 		{
 			disconnect();
+			LOG.printStackTrace(e);
 		}
 		
 		catch (Exception e)
 		{
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 	}
@@ -231,7 +236,33 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		{
 			ManagedObjectReference hostReference = vm.getSummary().runtime.host;
 			ManagedEntity host = MorUtil.createExactManagedEntity(si.getServerConnection(), hostReference);
-			String ipAddress = (((((HostSystem) host).getConfig()).network.consoleVnic)[0].getSpec().getIp().ipAddress);			
+			
+			//Get Network info
+			HostNetworkInfo networkInfo = ((HostSystem) host).getConfig().network;
+			HostVirtualNic[] virtualNics = null;
+			HostVirtualNic[] serviceNics = null;
+			String ipAddress = null;
+			
+			if (networkInfo.getConsoleVnic() != null)
+			{
+				serviceNics = networkInfo.getConsoleVnic();
+			}
+			
+			if (networkInfo.getVnic() != null)
+			{
+				virtualNics = networkInfo.getVnic();
+			}
+			
+			if (serviceNics != null)
+			{
+				ipAddress = serviceNics[0].getSpec().getIp().ipAddress;
+			}
+			
+			else if (virtualNics != null)
+			{
+				ipAddress = virtualNics[0].getSpec().getIp().ipAddress;
+			}
+			
 			String vmxPath = vm.getConfig().getFiles().getVmPathName();
 			String pathToVMRC = System.getenv("ProgramFiles") + "\\" + VMRC;
 			String args = " -h " + ipAddress + " -u " + HOST_USERNAME + " -p " + HOST_PASSWORD;
@@ -265,17 +296,21 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not access information related to the Virtual Machine Host", 
 					"Error", JOptionPane.ERROR_MESSAGE);
+			LOG.printStackTrace(e);
 		}
 		
 		catch (IOException e)
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not execute VMRC. Please check the path in deploy.conf",
 					"Error", JOptionPane.ERROR_MESSAGE);
+			LOG.printStackTrace(e);
 		}
 		
 		catch (Exception e)
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not locate virtual machine in the datacenter", "Error", JOptionPane.ERROR_MESSAGE);
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 	}
@@ -522,6 +557,8 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		catch (Exception e)
 		{
 			LOG.write("Error getting data to update VM table", true);
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
@@ -571,6 +608,8 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 				catch (Exception e)
 				{
 					LOG.write("Error in generating the report");
+					LOG.printStackTrace(e);
+					
 					e.printStackTrace();
 				}
 			}
@@ -604,6 +643,8 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		
 		catch (Exception e)
 		{
+			LOG.printStackTrace(e);
+			
 			e.printStackTrace();
 		}
 		
@@ -850,6 +891,7 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		
 		catch (NullPointerException e)
 		{
+			e.printStackTrace();
 			disconnect();
 		}
 		

@@ -135,6 +135,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not power on " + vm.getName());
 			LOG.write("Exception in PowerOn command: " + e.getMessage(), true);
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -167,7 +168,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not power off " + vm.getName());
 			LOG.write("Exception in PowerOff command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -200,7 +201,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not suspend " + vm.getName());
 			LOG.write("Exception in Suspend command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -233,7 +234,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not reset " + vm.getName());
 			LOG.write("Exception in Reset command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -258,7 +259,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not shutdown " + vm.getName());
 			LOG.write("Exception in Shutdown command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 	}
 	
@@ -278,7 +279,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not restart " + vm.getName());
 			LOG.write("Exception in Restart command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 	}
 	
@@ -308,7 +309,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not rename " + vm.getName());
 			LOG.write("Exception in Rename command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -343,7 +344,7 @@ public class CommandOperationsThread extends ThreadExt
 		{
 			LOG.write("Error: Could not delete " + name);
 			LOG.write("Exception in Delete command: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
@@ -409,7 +410,7 @@ public class CommandOperationsThread extends ThreadExt
 		catch (Exception e)
 		{
 			LOG.write("Exception occured while moving the virtual machine", true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 		
 		finally
