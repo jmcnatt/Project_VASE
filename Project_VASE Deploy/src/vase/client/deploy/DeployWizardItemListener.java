@@ -182,6 +182,7 @@ public class DeployWizardItemListener implements ItemListener, ProjectConstraint
 			main.center.guestInfoPanel.jtfIP.setText("");
 			main.center.guestInfoPanel.jtfNetmask.setText("");
 			main.center.guestInfoPanel.jtfDefaultGateway.setText("");
+			main.center.guestInfoPanel.jtfDnsServer.setText("");
 			main.center.guestInfoPanel.jtfIP.setEditable(false);
 			main.center.guestInfoPanel.jtfNetmask.setEditable(false);
 			main.center.guestInfoPanel.jtfDefaultGateway.setEditable(false);

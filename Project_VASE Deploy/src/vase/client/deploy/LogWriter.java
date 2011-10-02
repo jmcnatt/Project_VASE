@@ -170,21 +170,21 @@ public class LogWriter implements ProjectConstraints
 				jtaSystem.append(logEntry + "\n");
 				jtaSystem.setCaretPosition(jtaSystem.getText().length());
 			}
-			
-			if (logFileEnabled)
-			{
-				try
-				{
-					writer.println(logEntry);
-					writer.flush();
-				}
-				
-				catch (Exception e)
-				{
-					System.err.println(getTime() + "\nError in writing to the log.");
-				}
-			}
 		}
+			
+		if (logFileEnabled)
+		{
+			try
+			{
+				writer.println(logEntry);
+				writer.flush();
+			}
+			
+			catch (Exception e)
+			{
+				System.err.println(getTime() + "\nError in writing to the log.");
+			}
+		}		
 	}
 	
 	/**
@@ -244,6 +244,6 @@ public class LogWriter implements ProjectConstraints
 		writer.print("[" + e.getClass().getName() + "]");
 		writer.print(e.getMessage() + " \n");
 		e.printStackTrace(writer);
-		write(sw.toString(), true);
+		write(sw.toString(), false);
 	}
 }

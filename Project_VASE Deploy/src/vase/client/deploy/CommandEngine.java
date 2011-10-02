@@ -15,6 +15,7 @@ import javax.swing.filechooser.FileSystemView;
 
 import com.vmware.vim25.HostNetworkInfo;
 import com.vmware.vim25.HostVirtualNic;
+import com.vmware.vim25.ManagedObjectNotFound;
 import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.mo.Datacenter;
 import com.vmware.vim25.mo.Datastore;
@@ -895,6 +896,16 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 			disconnect();
 		}
 		
+		catch (ManagedObjectNotFound e)
+		{
+			LOG.write("Error: Could not locate VM in datacenter", true);
+		}
+		
+		catch (RuntimeException e)
+		{
+			LOG.write("Error: Runtime error in refreshing datacenter list", true);
+		}
+		
 		catch (RemoteException e)
 		{
 			disconnect();
@@ -902,7 +913,7 @@ public class CommandEngine implements ProjectConstraints, GuiConstraints
 		
 		catch (Exception e)
 		{
-			LOG.write("Exception in Refreshing data: " + e.getMessage(), true);
+			LOG.write("Error in Refreshing data: " + e.getMessage(), true);
 			e.printStackTrace();
 		}
 	}
