@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>Project_VASE Connect Help</title>
+<style type="text/css">
+body {
+	font-family: Tahoma, Geneva, sans-serif;
+}
+
+h1 {
+	font-size: 18pt;
+}
+
+h2 {
+	font-size: 14pt;
+}
+
+.heading {
+	font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
+	font-size: 24pt;
+	font-weight: bold;
+}
+
+.content {
+	width: 98%;
+	margin-left: 5px;
+}
+.denote {
+	font-size: 12px;
+}
+</style>
+</head>
+
+<body>
+<div class="content">
+<p><img src="icon.png" alt="Project_VASE" width="45" height="43" align="absmiddle" /> <span class="heading">Project_VASE Connect</span></p>
+<ul>
+  <li><a href="#GettingStarted" title="Getting Started">Getting Started</a></li>
+  <li><a href="#AddingConsoleUsers" title="Adding ESX/ESXi Users for Console Access">Adding ESX/ESXi Users for Console Access</a></li>
+  <li><a href="#ConfigurationFile" title="Configuration File (connect.conf)">Configuration File (connect.conf)</a></li>
+  <li><a href="#LoggingIn" title="Logging In">Logging In</a></li>
+  <li><a href="#ConnectingToVM" title="Connecting to a VM">Connecting to a VM</a></li>
+  <li><a href="#PowerOperations" title="Power Operations">Power Operations</a></li>
+  <li><a href="#SystemLogs" title="System Logs">System Logs</a></li>
+  <li><a href="#Settings" title="Settings">Settings</a></li>
+  <li><a href="#AdditionalInformation" title="Additional Information">Additional Information</a></li>
+  </ul>
+<hr />
+<h1><a name="GettingStarted">Getting Started</a></h1>
+<p>Welcome to Project_VASE Connect, a utility that interfaces with virtual machines in a VMware ESX or ESXi based datacenter. VASE Connect relies on the VMware Remote  Console desktop application to access the console (or &quot;Desktop&quot;) of a virtual machine without needing to log into vCenter using the vSphere Client.</p>
+<h2>Environment Requirements</h2>
+<p>Before using VASE Connect, make sure your VMware ESX/ESXi environment has the following:</p>
+<ul>
+  <li>VMware vCenter running with user accounts (Windows Server 2003 or 2008 recommended)</li>
+  <li>Datacenter containing the virtual machines to use with this software</li>
+  <li>User account on each host (seperate from Datacenter) for console access
+    <ul>
+      <li>IMPORTANT: Console access will fail if each host in the environment does not have an account for console access configured</li>
+      </ul>
+  </li>
+  <li>(Optional) Permissions set on vCenter user accounts for limited access on specific virtual machines</li>
+  </ul>
+<h2>Software Requirements</h2>
+<ul>
+  <li>Microsoft Windows XP or newer (other operating systems not tested or supported)</li>
+  <li>Java Runtime Environment Version 6 (latest update recommended)</li>
+  <li>VMware VMRC (included with application*)</li>
+  </ul>
+<p class="denote">*VMware Remote Console is included with the </p>
+<hr />
+<p class="denote">newest vSphere client also</p>
+<h1><a name="AddingConsoleUsers">Adding ESX/ESXi Users for Console Access</a></h1>
+<p>VMware VMRC does not currently support remote console using crendetials from vCenter. Therefore, an account must be used from ESX/ESXi. For security reasons, it is highly recommended that a second account other than root be created for this purpose.</p>
+<ol>
+  <li>Log into the ESX/ESXi node using the vSphere Client</li>
+  <li>Add a new Local User account. Make a note of the username and password for use in the connect.conf file in this software</li>
+  <li>Add the following permissions:
+    <ol>
+      <li>All 'Interaction' permissions</li>
+      <li>'Virtual Machine' permissions accepable for non-administrative users</li>
+      </ol>
+  </li>
+  <li>Add the exact same user account and permissions for each node in the datacenter</li>
+  </ol>
+<hr />
+<h1><a name="ConfigurationFile">Configuration File (connect.conf)</a></h1>
+<p>The configuration file connect.conf resides in the &lt;PROGRAM_FILES&gt;/Project_Vase Connect/ directory (unless otherwise specified during the installation process). The file contains values needed by VASE Connect to access the vCenter environment.</p>
+<p>The format of the configuration file is VARIABLE=value (no spaces between equals sign, no quotes)</p>
+<ul>
+  <li>DATACENTER - your datacenter name</li>
+  <li>VMRC_PATH - the path to the VMRC executable, excluding &quot;C:\Program Files\&quot;</li>
+  <li>TEMPLATEDIR - the directory containing templates. VASE Connect will not search this directory when looking for virtual machines</li>
+  <li>HOST_USERNAME - the username of the non-vCenter user on each host, required for console access*</li>
+  <li>HOST_PASSWORD - the password of the non-vCenter user on each host, required for console access*</li>
+</ul>
+<p>Before starting VASE Connect, edit this file with a basic text editor and assign the variables according to the environment.</p>
+<p class="denote">* see <a title="Adding ESX/ESXi Users for Console Access" href="#AddingConsoleUsers">Adding ESX/ESXi Users for Console Access</a></p>
+<hr />
+<h1><a name="LoggingIn">Logging In</a></h1>
+<p>After successful installation, VASE Connect will present a login prompt with the following:</p>
+<ul>
+  <li>Server: the vCenter server in the following formats:
+    <ul>
+      <li>IP Address only: (192.168.1.1)</li>
+      <li>Hostname only: (server.domain)</li>
+      <li>Full Path: (https://192.168.1.1/sdk)</li>
+      </ul>
+  </li>
+  <li>Username: credentials from vCenter</li>
+  <li>Password: credentials from vCenter</li>
+  </ul>
+<p>If an error occurs, check network connectivity and make sure the credentials and the vCenter server address have been entered correctly.</p>
+<hr />
+<h1><a name="ConnectingToVM">Connecting to a VM</a></h1>
+<p>Once the list of virtual machines is visible, a connection to the console can be made in several ways.</p>
+<ol>
+  <li>Highlighting a virtual machine, and clicking the &quot;Launch Console&quot; button at the bottom of the window</li>
+  <li>Highlighting a virtual machine and right-clicking to bring up the shortcut menu, then clicking &quot;Launch Console&quot;</li>
+  <li>Highlighting a virtual machine and choosing File -&gt; Launch Console in the menu bar</li>
+  <li>Double clicking a virtual machine</li>
+  </ol>
+<p>The VMRC program will launch after a few seconds depending on the network latency.</p>
+<p>Because the VMRC session is a separate process, multiple console sessions can be launch with one instance of VASE Connect.</p>
+<hr />
+<h1><a name="PowerOperations">Power Operations</a></h1>
+<p>Virtual machine operations (Power On, Power Off, Suspend, Reset, Shutdown) are supported with VASE Connect. To access these operations, highlight the desired virtual machine and do one of the following:</p>
+<p>Right-click and select the desired operation</p>
+<p>Choose VM -&gt; [operation] from the menu bar</p>
+<p>Note: after a power operation, you may need to refresh the GUI to see the change using 'F5' or through View -&gt; Refresh on the menu bar</p>
+<hr />
+<h1><a name="SystemLogs">System Logs</a></h1>
+<p>VASE Connect logs its activity and errors in a .log file.</p>
+<p>The log file is located in the &lt;APPDATA&gt;/Project_VASE folder.</p>
+<p>Logging can be enabled and disabled, and the log file can be cleared using the log menu in the menu bar.</p>
+<hr />
+<h1><a name="Settings">Settings</a></h1>
+<p>The last user to log in and the last successful server connection are automatically saved in a .bin file called &quot;settings.bin&quot; in the &lt;APPDATA&gt;/Project_VASE folder. The full screen setting is also saved in this file. The save occurs by either selecting File -&gt; Save Settings or closing the application after a successful logon.</p>
+<hr />
+<h1><a name="Errors">Errors</a></h1>
+<p>Here are some common error messages that could be encountered during VASE Connect operation:</p>
+<p>Message: &quot;Could not access information related to the Virtual Machine Host&quot;<br />
+  Solution: Check error log to determine which host was accessed when launching the console. Ensure that adequate permissions are set for the host (non-vCenter) account.</p>
+<p>Message: &quot;Could not locate virtual machine in the datacenter&quot;<br />
+  Solution: Most likely the virtual machine is no longer in the datacenter. Perform a refresh using 'F5' or View -&gt; Refresh</p>
+<p>Message: &quot;Connection lost from vCenter server&quot;<br />
+  Solution: Check physical and logical network connectivity and ensure the vCenter server is still online  </p>
+<p>To report an error or assist in the correction of know bugs, please visit the sourceforge project listed at the bottom of this document.</p>
+<hr />
+<h1><a name="AdditionalInformation">Additional Information</a></h1>
+<p>For more information on Project_VASE or to download the source code, please visit <a target="_blank" href="https://sourceforge.net/projects/projectvase/">https://sourceforge.net/projects/projectvase/</a><br />
+</p>
+</div>
+</body>
+</html>
