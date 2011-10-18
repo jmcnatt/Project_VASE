@@ -70,7 +70,7 @@ public class ListListener extends MouseAdapter
 			{
 				event.consume();
 				Object vm = null;
-				if (list.getSelectedIndex() != -1)
+				if (list.getSelectedIndex() != -1 && list.getModel().getElementAt(list.getSelectedIndex()) != null)
 				{
 					Object[] data = (Object[]) list.getModel().getElementAt(list.getSelectedIndex());
 					vm = data[3];

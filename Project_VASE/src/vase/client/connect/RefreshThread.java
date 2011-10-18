@@ -54,11 +54,12 @@ public class RefreshThread extends ThreadExt
 					
 					for (VirtualMachine vm : vms)
 					{
-						Object[] data = new Object[3];
+						Object[] data = new Object[4];
 						VirtualMachineSummary summary = vm.getSummary();
 						try {data[0] = summary.config.name;} catch (Exception e) {data[0] = "Unknown";}
 						try {data[1] = summary.guest.guestFullName;} catch (Exception e) {data[1] = "Unknown";}
 						try {data[2] = summary.runtime.powerState.name();} catch (Exception e) {data[2] = "Unknown";}
+						data[3] = vm;
 						model.addElement(data);
 					}
 					
