@@ -36,7 +36,7 @@ class RefresherWorker extends ThreadExt
 			try
 			{
 				sleep(ProjectConstraints.REFRESH_INTERVAL * 1000);
-				new RefreshThread(main);
+				new RefreshThread(main).start();
 			}
 			
 			catch (InterruptedException e)

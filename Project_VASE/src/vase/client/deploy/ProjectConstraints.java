@@ -31,7 +31,7 @@ public interface ProjectConstraints
 	/**
 	 * The build of this project
 	 */
-	String BUILD = "501";
+	String BUILD = "601";
 	
 	/**
 	 * The stage of this project
