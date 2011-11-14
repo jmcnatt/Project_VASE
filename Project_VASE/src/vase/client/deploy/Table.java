@@ -92,7 +92,7 @@ public class Table extends JTable implements InterfaceConstraints
 	
 	private void setData(CommandEngine engine)
 	{
-		Object[][] engineData = engine.gatherData();
+		Object[][] engineData = engine.gatherTableData();
 		
 		for (int i = 0; i < engineData.length; i++)
 		{

@@ -3,6 +3,7 @@
  */
 package vase.client.deploy;
 
+import java.rmi.RemoteException;
 import java.util.Enumeration;
 
 import javax.swing.BorderFactory;
@@ -12,7 +13,11 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
+import com.vmware.vim25.InvalidProperty;
+import com.vmware.vim25.RuntimeFault;
 import com.vmware.vim25.mo.Folder;
+import com.vmware.vim25.mo.VirtualMachine;
+import com.vmware.vim25.mo.VirtualApp;
 import com.vmware.vim25.mo.ManagedEntity;
 
 /**
@@ -53,7 +58,7 @@ public class Tree extends JTree
 	{
 		if (engine.dc != null)
 		{
-			datacenter = new DefaultMutableTreeNode(engine.dc);
+			datacenter = new DefaultMutableTreeNode(new TreeObject(engine.dc.getName(), TreeObject.DATACENTER));
 			model.setRoot(datacenter);			
 			
 			try
@@ -61,14 +66,38 @@ public class Tree extends JTree
 				if (engine.dc.getVmFolder().getChildEntity() != null)
 				{
 					//add children
-					for (ManagedEntity node : engine.dc.getVmFolder().getChildEntity())
+					for (ManagedEntity entity : engine.dc.getVmFolder().getChildEntity())
 					{
-						DefaultMutableTreeNode thisNode = new DefaultMutableTreeNode(node);
-						datacenter.add(thisNode);
-						if (node instanceof Folder)
+						DefaultMutableTreeNode thisNode = null;
+						
+						if (entity instanceof VirtualMachine)
 						{
-							getChildEntities((Folder) node, thisNode);
+							if (((VirtualMachine) entity).getParent().getName().equals(ProjectConstraints.TEMPLATE_FOLDER))
+							{
+								thisNode = new DefaultMutableTreeNode(new TreeObject(((VirtualMachine) entity).getName(), TreeObject.TEMPLATE));
+							}
+							
+							else
+							{
+								thisNode = new DefaultMutableTreeNode(new TreeObject(((VirtualMachine) entity).getName(), TreeObject.VIRTUAL_MACHINE));
+							}
+							
+							datacenter.add(thisNode);
 						}
+						
+						else if (entity instanceof VirtualApp)
+						{
+							thisNode = new DefaultMutableTreeNode(new TreeObject(((VirtualApp) entity).getName(), TreeObject.VIRTUAL_MACHINE));
+							datacenter.add(thisNode);
+						}
+						
+						else if (entity instanceof Folder)
+						{
+							FolderExt folder = new FolderExt((Folder) entity);
+							thisNode = new DefaultMutableTreeNode(new TreeObject(((Folder) entity).getName(), TreeObject.FOLDER));
+							datacenter.add(thisNode);
+							getChildEntities(folder, thisNode);
+						}						
 					}
 				}
 			}
@@ -93,30 +122,53 @@ public class Tree extends JTree
 	 * of the children is a Folder, use recursion and re-run this method
 	 * @param thisFolder the folder containing children
 	 * @param top the tree node representation of the folder
+	 * @throws RemoteException 
+	 * @throws RuntimeFault 
+	 * @throws InvalidProperty 
 	 */
-	public void getChildEntities(Folder thisFolder, DefaultMutableTreeNode top)
+	public void getChildEntities(FolderExt thisFolder, DefaultMutableTreeNode top) throws InvalidProperty, RuntimeFault, RemoteException
 	{
-		try
-		{
-			ManagedEntity[] children = thisFolder.getChildEntity();
-			
-			for (ManagedEntity node : children)
-			{
-				DefaultMutableTreeNode currentNode = new DefaultMutableTreeNode(node);
-				top.add(currentNode);
-				if (node instanceof Folder)
-				{
-					getChildEntities((Folder) node, currentNode);
-				}
-			}
-		}
+		ManagedEntity[] children = thisFolder.getFolder().getChildEntity();
 		
-		catch (Exception e)
+		for (ManagedEntity entity : children)
 		{
-			e.printStackTrace();
+			DefaultMutableTreeNode currentNode = null;
+			if (entity instanceof VirtualMachine)
+			{
+				if (((VirtualMachine) entity).getParent().getName().equals(ProjectConstraints.TEMPLATE_FOLDER))
+				{
+					currentNode = new DefaultMutableTreeNode(new TreeObject(((VirtualMachine) entity).getName(), TreeObject.TEMPLATE));
+				}
+				
+				else
+				{
+					currentNode = new DefaultMutableTreeNode(new TreeObject(((VirtualMachine) entity).getName(), TreeObject.VIRTUAL_MACHINE));
+				}			
+				
+				top.add(currentNode);
+			}
+			
+			else if (entity instanceof VirtualApp)
+			{
+				currentNode = new DefaultMutableTreeNode(new TreeObject(((VirtualApp) entity).getName(), TreeObject.VIRTUAL_MACHINE));
+				top.add(currentNode);
+			}
+			
+			else if (entity instanceof Folder)
+			{
+				FolderExt folder = new FolderExt((Folder) entity);
+				currentNode = new DefaultMutableTreeNode(new TreeObject(((Folder) entity).getName(), TreeObject.FOLDER));
+				top.add(currentNode);
+				getChildEntities(folder, currentNode);
+			}				
 		}
 	}
 	
+	
+	/**
+	 * Expands the tree
+	 * @param expand
+	 */
 	public void expandAll(boolean expand) 
 	{
 	    TreeNode root = (TreeNode) model.getRoot();

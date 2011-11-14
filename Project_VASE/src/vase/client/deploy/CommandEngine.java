@@ -45,8 +45,13 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	private String currentServer;
 	private String currentUsername;
 	private String currentPassword;
-	private ServiceInstance si;
 	private GuiDeploymentTab deployTab;
+	
+	/**
+	 * Server Instance handling the connection to VCENTER
+	 * @see ServiceInstance
+	 */
+	public ServiceInstance si;
 	
 	/**
 	 * GuiMain instance
@@ -223,7 +228,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		catch (Exception e)
 		{
 			LOG.printStackTrace(e);
-			
 			e.printStackTrace();
 		}
 	}
@@ -533,7 +537,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 * is valid
 	 * @return the table of information from each virtual machine
 	 */
-	public Object[][] gatherData()
+	public Object[][] gatherTableData()
 	{
 		Object[][] data = null;
 		
@@ -614,8 +618,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 				{
 					LOG.write("Error in generating the report");
 					LOG.printStackTrace(e);
-					
-					e.printStackTrace();
 				}
 			}
 		}
@@ -649,8 +651,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		catch (Exception e)
 		{
 			LOG.printStackTrace(e);
-			
-			e.printStackTrace();
 		}
 		
 		finally
@@ -666,10 +666,10 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void quit()
 	{
-			saveSettings();
-			si.getServerConnection().logout();
-			main.dispose();
-			System.exit(0);
+		saveSettings();
+		si.getServerConnection().logout();
+		main.dispose();
+		System.exit(0);
 	}
 	
 	/**
@@ -679,6 +679,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	public void disconnect()
 	{
 		LOG.write("Error: Connection lost from vCenter server");
+		main.worker.interrupt();
 		JOptionPane.showMessageDialog(main, "Connection lost from vCenter server", "Error: Connection Lost", JOptionPane.ERROR_MESSAGE);
 		main.dispose();
 		new LoginSplash();

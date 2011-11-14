@@ -20,6 +20,7 @@ public class FolderExt
 {
 	private String name;
 	private ImageIcon icon;
+	private Folder folder;
 	
 	/**
 	 * Main Constructor
@@ -29,6 +30,7 @@ public class FolderExt
 	 */
 	public FolderExt(Folder folder)
 	{
+		this.folder = folder;
 		name = folder.getName();
 		setIcon(new ImageIcon(getClass().getResource("/images/folder-icon.png")));
 	}
@@ -67,5 +69,14 @@ public class FolderExt
 	public ImageIcon getIcon()
 	{
 		return icon;
+	}
+	
+	/**
+	 * Gets the Folder object
+	 * @return the Folder object
+	 */
+	public Folder getFolder()
+	{
+		return folder;
 	}
 }

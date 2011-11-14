@@ -69,7 +69,7 @@ public class RefreshThread extends ThreadExt
 				catch (Exception e)
 				{
 					ProjectConstraints.LOG.write("Error Updating Data", true);
-					e.printStackTrace();
+					ProjectConstraints.LOG.printStackTrace(e);
 				}
 			}
 		});
@@ -90,7 +90,7 @@ public class RefreshThread extends ThreadExt
 			{
 				int selection = main.vmTable.getSelectedRow();
 				main.vmTable.getModel().removeAllRows();
-				Object[][] engineData = main.engine.gatherData();
+				Object[][] engineData = main.engine.gatherTableData();
 				
 				for (int i = 0; i < engineData.length; i++)
 				{

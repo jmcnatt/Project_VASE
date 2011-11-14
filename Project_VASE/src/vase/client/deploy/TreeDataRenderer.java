@@ -5,17 +5,10 @@ package vase.client.deploy;
 
 import java.awt.Component;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
-
-import com.vmware.vim25.VirtualMachinePowerState;
-import com.vmware.vim25.mo.Datacenter;
-import com.vmware.vim25.mo.Folder;
-import com.vmware.vim25.mo.VirtualApp;
-import com.vmware.vim25.mo.VirtualMachine;
 
 /**
  * Renders the Tree data on the Summary tab in GuiMain
@@ -38,84 +31,15 @@ public class TreeDataRenderer extends DefaultTreeCellRenderer
 	public Component getTreeCellRendererComponent(JTree tree, Object node,
             boolean selected, boolean expanded, boolean leaf, int row, boolean hasFocus)
 	{
-		Object value = ((DefaultMutableTreeNode) node).getUserObject();
+		TreeObject object = (TreeObject) ((DefaultMutableTreeNode) node).getUserObject();
+		object.setExpanded(expanded);
 		JLabel label = new JLabel();
 		label.setOpaque(false);
 		label.setIconTextGap(10);
 		label.setHorizontalTextPosition(JLabel.RIGHT);
 		
-		if (value instanceof Datacenter)
-		{
-			label.setText(((Datacenter) value).getName());
-			label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/datacenter-icon.png")));
-		}
-		
-		else if (value instanceof Folder)
-		{
-			try
-			{
-				label.setText(((Folder) value).getName());
-				
-				if (expanded)
-				{
-					label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/folder-icon-small-open.png")));
-				}
-				
-				else
-				{
-					label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/folder-icon-small-closed.png")));
-				}
-			}
-			
-			catch (RuntimeException e)
-			{
-				//Do Nothing
-			}
-		}
-		
-		else if (value instanceof VirtualMachine)
-		{
-			try
-			{
-				VirtualMachine vm = (VirtualMachine) value;
-				Folder parent = (Folder) vm.getParent();
-				label.setText(vm.getName());
-				
-				if (parent.getName().equals(ProjectConstraints.TEMPLATE_FOLDER))
-				{
-					label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/template-icon-small.png")));
-				}
-				
-				else
-				{
-					if (vm.getSummary().runtime.powerState.name().equals(VirtualMachinePowerState.poweredOn.name()))
-					{
-						label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/vm-icon-small-poweredon.png")));
-					}
-					else
-					{
-						label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/vm-icon-small.png")));
-					}
-				}
-			}
-			
-			catch (RuntimeException e)
-			{
-				//Do nothing
-			}
-		}
-		
-		else if (value instanceof VirtualApp)
-		{
-			label.setText(((VirtualApp) value).getName());
-			label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/vapp-icon.png")));
-		}
-		
-		else
-		{
-			label.setText(value.toString());
-			label.setIcon(new ImageIcon(getClass().getResource("/images/deploy/blank.png")));
-		}
+		label.setText(object.getName());
+		label.setIcon(object.getIcon());
 		
 		if (selected)
 		{

@@ -64,6 +64,11 @@ public class GuiMain extends Window implements ProjectConstraints
 	public CommandEngine engine;
 	
 	/**
+	 * Refresh worker
+	 */
+	public RefresherWorker worker;
+	
+	/**
 	 * Main Constructor that builds the GUI window
 	 * @param title
 	 */
@@ -89,7 +94,7 @@ public class GuiMain extends Window implements ProjectConstraints
 		//Set Visible
 		setVisible(true);
 		LOG.write("Welcome to Project_VASE Deploy");
-		new RefresherWorker(this);
+		worker = new RefresherWorker(this);
 	}
 	
 	/**
