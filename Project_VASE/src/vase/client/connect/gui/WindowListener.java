@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -14,7 +14,7 @@ import javax.swing.JOptionPane;
  * @version Project_VASE Connect
  * @see SettingsReader#save()
  */
-public class GuiWindowListener extends WindowAdapter
+public class WindowListener extends WindowAdapter
 {
 	/**
 	 * Window closing event that this class is overriding
@@ -23,12 +23,12 @@ public class GuiWindowListener extends WindowAdapter
 	@Override
 	public void windowClosing(WindowEvent event)
 	{
-		if (event.getSource() instanceof GuiMain)
+		if (event.getSource() instanceof Main)
 		{
-			int choice = JOptionPane.showConfirmDialog((GuiMain) event.getSource(), "Are you sure you want to quit?", "Exit VASE Connect?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+			int choice = JOptionPane.showConfirmDialog((Main) event.getSource(), "Are you sure you want to quit?", "Exit VASE Connect?", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
 			if (choice == JOptionPane.YES_OPTION)
 			{
-				((GuiMain) event.getSource()).engine.quit();
+				((Main) event.getSource()).engine.quit();
 			}
 		}
 	}

@@ -9,8 +9,9 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
-import vase.client.ProcessErrorThread;
-import vase.client.ProcessInputThread;
+import vase.client.thread.ProcessErrorThread;
+import vase.client.thread.ProcessInputThread;
+import vase.client.connect.gui.Main;
 
 import com.vmware.vim25.HostNetworkInfo;
 import com.vmware.vim25.HostVirtualNic;
@@ -38,9 +39,14 @@ public class CommandEngine implements ProjectConstraints
 {
 	private String currentUsername;
 	private String currentServer;
-	public GuiMain main;
 	private ServiceInstance si;	
 	private Datacenter dc = null;
+	private Folder rootDir = null;
+	
+	/**
+	 * Main GUI instance
+	 */
+	public Main main;
 	
 	/**
 	 * Power on the virtual machine
@@ -77,7 +83,7 @@ public class CommandEngine implements ProjectConstraints
 	 * @param si the service instance created by the LoginSplash
 	 * @param the main Gui window
 	 */
-	public CommandEngine(ServiceInstance si, GuiMain main)
+	public CommandEngine(ServiceInstance si, Main main)
 	{
 		this.main = main;
 		this.si = si;
@@ -93,6 +99,15 @@ public class CommandEngine implements ProjectConstraints
 					dc = (Datacenter) datacenters[i];
 				}
 			}
+			
+			for (ManagedEntity entity : dc.getVmFolder().getChildEntity())
+			{
+				if (entity instanceof Folder && entity.getName().equals(ROOT_FOLDER))
+				{
+					rootDir = (Folder) entity;
+					break;
+				}
+			}
 		}
 		
 		catch (RemoteException e)
@@ -104,6 +119,7 @@ public class CommandEngine implements ProjectConstraints
 	/**
 	 * Gets the Virtual Machine objects from the datacenter in the environment specified
 	 * in the conf file. Ignores the TEMPLATE_DIR specified in the conf file.
+	 * Targets the Project_DIR in the conf file
 	 * @throws RemoteException 
 	 * @throws RuntimeFault 
 	 * @throws InvalidProperty 
@@ -113,11 +129,11 @@ public class CommandEngine implements ProjectConstraints
 		ArrayList<VirtualMachine> vms = new ArrayList<VirtualMachine>();
 		ManagedEntity[] virtualMachines = null;
 		
-		if (dc != null)
+		if (dc != null && rootDir != null)
 		{
 			try
 			{
-				virtualMachines = new InventoryNavigator(dc.getVmFolder()).searchManagedEntities("VirtualMachine");
+				virtualMachines = new InventoryNavigator(rootDir).searchManagedEntities("VirtualMachine");
 			}
 			
 			catch (InvalidProperty e)
@@ -133,6 +149,7 @@ public class CommandEngine implements ProjectConstraints
 			catch (RemoteException e)
 			{
 				LOG.printStackTrace(e);
+				disconnect();
 			}
 		}
 		
@@ -275,6 +292,11 @@ public class CommandEngine implements ProjectConstraints
 			LOG.printStackTrace(e);
 		}
 		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
+		
 		catch (Exception e)
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not locate virtual machine in the datacenter", "Error", JOptionPane.ERROR_MESSAGE);
@@ -289,6 +311,7 @@ public class CommandEngine implements ProjectConstraints
 	public void disconnect()
 	{
 		LOG.write("Error: Connection lost from vCenter server");
+		main.worker.halt();
 		JOptionPane.showMessageDialog(main, "Connection lost from vCenter server", "Error: Connection Lost", JOptionPane.ERROR_MESSAGE);
 		main.dispose();
 		new LoginSplash();
@@ -308,9 +331,12 @@ public class CommandEngine implements ProjectConstraints
 			{
 				saveSettings();
 				si.getServerConnection().logout();
-				main.dispose();
-				new LoginSplash();
 			}
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
 		}
 		
 		catch (Exception e)
@@ -320,7 +346,9 @@ public class CommandEngine implements ProjectConstraints
 		
 		finally
 		{
+			main.worker.halt();
 			main.dispose();
+			new LoginSplash();
 		}
 	}
 	

@@ -36,9 +36,7 @@ public class RefreshThread extends ThreadExt
 	 * Run Method, runs the thread
 	 */
 	public void run()
-	{
-		main.engine.refresh();
-		
+	{		
 		//Update Lists
 		updateLists();
 		

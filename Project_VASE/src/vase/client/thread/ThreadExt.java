@@ -1,7 +1,7 @@
 /**
  * Project_VASE Client package
  */
-package vase.client;
+package vase.client.thread;
 
 /**
  * ThreadExt superclass
@@ -11,10 +11,25 @@ package vase.client;
 public class ThreadExt extends Thread
 {
 	/**
+	 * Stop representation of this thread for haulting purposes
+	 */
+	public volatile Thread thread;
+	
+	/**
 	 * Main Constructor
 	 */
 	public ThreadExt()
 	{
 		super();
 	}
+	
+	/**
+	 * Stops this thread by setting the instance to null
+	 */
+	public void halt()
+	{
+		thread = null;
+	}
+	
+	
 }

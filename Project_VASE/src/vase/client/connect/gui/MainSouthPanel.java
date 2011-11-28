@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import javax.swing.JSeparator;
 import javax.swing.JTextArea;
@@ -15,7 +15,7 @@ import vase.client.ScrollPane;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class GuiSouthPanel extends Panel
+public class MainSouthPanel extends Panel
 {
 	private static final long serialVersionUID = -7890898388384771207L;
 	private JTextArea log;
@@ -23,7 +23,7 @@ public class GuiSouthPanel extends Panel
 	/**
 	 * Main Constructor
 	 */
-	public GuiSouthPanel(JTextArea log)
+	public MainSouthPanel(JTextArea log)
 	{
 		super(new SpringLayout(), false, DIM_CONNECT_MAIN_CONTENT_PANE_SOUTH);
 		this.log = log;

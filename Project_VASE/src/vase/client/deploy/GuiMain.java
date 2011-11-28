@@ -66,7 +66,7 @@ public class GuiMain extends Window implements ProjectConstraints
 	/**
 	 * Refresh worker
 	 */
-	public RefresherWorker worker;
+	public RefreshWorker worker;
 	
 	/**
 	 * Main Constructor that builds the GUI window
@@ -94,7 +94,7 @@ public class GuiMain extends Window implements ProjectConstraints
 		//Set Visible
 		setVisible(true);
 		LOG.write("Welcome to Project_VASE Deploy");
-		worker = new RefresherWorker(this);
+		worker = new RefreshWorker(this);
 	}
 	
 	/**

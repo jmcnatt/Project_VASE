@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import java.awt.BorderLayout;
 import javax.swing.JTextArea;
@@ -9,6 +9,12 @@ import vase.client.List;
 import vase.client.Panel;
 import vase.client.Utilities;
 import vase.client.Window;
+import vase.client.connect.CommandEngine;
+import vase.client.connect.list.ListDataRenderer;
+import vase.client.connect.list.ListListener;
+import vase.client.connect.ProjectConstraints;
+import vase.client.connect.gui.refresh.RefreshThread;
+import vase.client.connect.gui.refresh.RefreshWorker;
 
 import com.vmware.vim25.mo.ServiceInstance;
 
@@ -18,13 +24,27 @@ import com.vmware.vim25.mo.ServiceInstance;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class GuiMain extends Window implements ProjectConstraints
+public class Main extends Window implements ProjectConstraints
 {
 	private static final long serialVersionUID = 7837947212807014566L;
 	
-	public CommandEngine engine;
-	public List jListVMs;
 	private JTextArea jtaLog;
+	
+	/**
+	 * CommandEngine instance
+	 */
+	public CommandEngine engine;
+	
+	/**
+	 * Main List
+	 */
+	public List jListVMs;
+	
+	/**
+	 * RefreshWorker
+	 */
+	public RefreshWorker worker;
+	
 	
 	/**
 	 * Main Constructor
@@ -33,7 +53,7 @@ public class GuiMain extends Window implements ProjectConstraints
 	 * object created with this constructor.
 	 * @param si the ServiceInstance representation of the connection to vCenter
 	 */
-	public GuiMain(ServiceInstance si)
+	public Main(ServiceInstance si)
 	{
 		super("VASE Connect");
 		setResizable(false);
@@ -41,7 +61,7 @@ public class GuiMain extends Window implements ProjectConstraints
 		setSize(DIM_CONNECT_MAIN_CONTENT_PANE);
 		getContentPane().setPreferredSize(DIM_CONNECT_MAIN_CONTENT_PANE);
 		setLocationRelativeTo(null);
-		setJMenuBar(new GuiMenuBar(new GuiActionListener(this)));
+		setJMenuBar(new MenuBar(new ActionEventListener(this)));
 		
 		engine = new CommandEngine(si, this);
 		
@@ -54,7 +74,7 @@ public class GuiMain extends Window implements ProjectConstraints
 		pack();
 		setVisible(true);
 		LOG.write("Welcome to Project_VASE Connect");
-		new RefresherWorker(this);
+		worker = new RefreshWorker(this);
 	}
 	
 	/**
@@ -74,9 +94,9 @@ public class GuiMain extends Window implements ProjectConstraints
 	{
 		getContentPane().setLayout(new BorderLayout());
 		
-		Panel north = new GuiNorthPanel();
-		Panel center = new GuiCenterPanel(jListVMs);
-		Panel south = new GuiSouthPanel(jtaLog);
+		Panel north = new MainNorthPanel();
+		Panel center = new MainCenterPanel(jListVMs);
+		Panel south = new MainSouthPanel(jtaLog);
 		
 		add(north, BorderLayout.NORTH);
 		add(center, BorderLayout.CENTER);
@@ -88,7 +108,7 @@ public class GuiMain extends Window implements ProjectConstraints
 	 */
 	private void addListeners()
 	{
-		addWindowListener(new GuiWindowListener());
+		addWindowListener(new WindowListener());
 		
 		ListListener listener = new ListListener(jListVMs, engine);
 		jListVMs.addMouseListener(listener);

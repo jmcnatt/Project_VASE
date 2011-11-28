@@ -13,16 +13,18 @@ import vase.client.ThreadExt;
  * @see GuiMain
  * @see ProjectConstraints#REFRESH_INTERVAL
  */
-class RefresherWorker extends ThreadExt
+public class RefreshWorker extends ThreadExt
 {
 	private GuiMain main;
 	
 	/**
 	 * Main Constructor.  Starts the thread
 	 */
-	public RefresherWorker(GuiMain main)
+	public RefreshWorker(GuiMain main)
 	{
+		super();
 		this.main = main;
+		thread = this;
 		start();
 	}
 	
@@ -31,12 +33,16 @@ class RefresherWorker extends ThreadExt
 	 */
 	public void run()
 	{
-		while (true)
+		Thread thisThread = Thread.currentThread();
+		
+		while (thread == thisThread)
 		{
 			try
 			{
 				sleep(ProjectConstraints.REFRESH_INTERVAL * 1000);
-				new RefreshThread(main).start();
+				if (!(thread == thisThread)) break;
+				main.engine.refresh();
+				new RefreshThread(main).start();				
 			}
 			
 			catch (InterruptedException e)

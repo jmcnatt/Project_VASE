@@ -308,6 +308,11 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 			LOG.printStackTrace(e);
 		}
 		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
+		
 		catch (IOException e)
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not execute VMRC. Please check the path in deploy.conf",
@@ -319,8 +324,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		{
 			JOptionPane.showMessageDialog(main, "Error: Could not locate virtual machine in the datacenter", "Error", JOptionPane.ERROR_MESSAGE);
 			LOG.printStackTrace(e);
-			
-			e.printStackTrace();
 		}
 	}
 	
@@ -401,9 +404,17 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void powerOn(VirtualMachine vm)
 	{
-		LOG.write("Powering on " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, POWER_ON, this);
-		thread.start();
+		try
+		{
+			LOG.write("Powering on " + vm.getName());
+			Thread thread = new CommandOperationsThread(vm, POWER_ON, this);
+			thread.start();
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
 	}
 	
 	/**
@@ -412,9 +423,17 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void powerOff(VirtualMachine vm)
 	{
-		LOG.write("Powering off " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, POWER_OFF, this);
-		thread.start();
+		try
+		{
+			LOG.write("Powering off " + vm.getName());
+			Thread thread = new CommandOperationsThread(vm, POWER_OFF, this);
+			thread.start();
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
 	}
 	
 	/**
@@ -423,9 +442,17 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void suspend(VirtualMachine vm)
 	{
-		LOG.write("Suspending " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, SUSPEND, this);
-		thread.start();
+		try
+		{
+			LOG.write("Suspending " + vm.getName());
+			Thread thread = new CommandOperationsThread(vm, SUSPEND, this);
+			thread.start();
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
 	}
 	
 	/**
@@ -445,9 +472,17 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void shutdown(VirtualMachine vm)
 	{
-		LOG.write("Shutting down " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, SHUTDOWN, this);
-		thread.start();
+		try
+		{
+			LOG.write("Shutting down " + vm.getName());
+			Thread thread = new CommandOperationsThread(vm, SHUTDOWN, this);
+			thread.start();
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
 	}
 	
 	/**
@@ -456,9 +491,17 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void restart(VirtualMachine vm)
 	{
-		LOG.write("Restarting " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, RESTART, this);
-		thread.start();
+		try
+		{
+			LOG.write("Restarting " + vm.getName());
+			Thread thread = new CommandOperationsThread(vm, RESTART, this);
+			thread.start();
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
+		}
 	}
 	
 	/**
@@ -467,14 +510,22 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void delete(VirtualMachine vm)
 	{
-		int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this" +
-				" virtual machine from the datastore?", "Confirm Delete", JOptionPane.YES_NO_OPTION,
-				JOptionPane.QUESTION_MESSAGE);
-		if (confirm == JOptionPane.YES_OPTION)
+		try
 		{
-			LOG.write("Deleting " + vm.getName() + " from datastore");
-			Thread thread = new CommandOperationsThread(vm, DELETE, this);
-			thread.start();
+			int confirm = JOptionPane.showConfirmDialog(null, "Are you sure you want to delete this" +
+					" virtual machine from the datastore?", "Confirm Delete", JOptionPane.YES_NO_OPTION,
+					JOptionPane.QUESTION_MESSAGE);
+			if (confirm == JOptionPane.YES_OPTION)
+			{
+				LOG.write("Deleting " + vm.getName() + " from datastore");
+				Thread thread = new CommandOperationsThread(vm, DELETE, this);
+				thread.start();
+			}
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
 		}
 	}	
 	
@@ -484,25 +535,41 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void rename(VirtualMachine vm)
 	{
-		String name = JOptionPane.showInputDialog(null, "Enter new guest name: ");
-		if (name != null)
+		try
 		{
-			LOG.write("Renaming " + vm.getName() + " to " + name);
-			Thread thread = new CommandOperationsThread(vm, RENAME, this, name);
-			thread.start();
+			String name = JOptionPane.showInputDialog(null, "Enter new guest name: ");
+			if (name != null)
+			{
+				LOG.write("Renaming " + vm.getName() + " to " + name);
+				Thread thread = new CommandOperationsThread(vm, RENAME, this, name);
+				thread.start();
+			}
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
 		}
 	}
 	
 	public void setTeam(VirtualMachine vm)
 	{
-		String choice =
-			(String) JOptionPane.showInputDialog(main, "Select Team", "Team: ", JOptionPane.INFORMATION_MESSAGE, null, TEAM_NAMES, "Team 1");	
-		if (choice != null)
+		try
 		{
-			LOG.write("Changing " + vm.getName() + " to " + choice);
-			TEAMS.put(vm.getName(), choice);
-			Thread thread = new CommandOperationsThread(vm, MOVE, this, choice);
-			thread.start();
+			String choice =
+				(String) JOptionPane.showInputDialog(main, "Select Team", "Team: ", JOptionPane.INFORMATION_MESSAGE, null, TEAM_NAMES, "Team 1");	
+			if (choice != null)
+			{
+				LOG.write("Changing " + vm.getName() + " to " + choice);
+				TEAMS.put(vm.getName(), choice);
+				Thread thread = new CommandOperationsThread(vm, MOVE, this, choice);
+				thread.start();
+			}
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
 		}
 	}
 	
@@ -567,8 +634,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		{
 			LOG.write("Error getting data to update VM table", true);
 			LOG.printStackTrace(e);
-			
-			e.printStackTrace();
 		}
 		
 		return data;
@@ -643,9 +708,12 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 			{
 				saveSettings();
 				si.getServerConnection().logout();
-				main.dispose();
-				new LoginSplash();
 			}
+		}
+		
+		catch (RuntimeException e)
+		{
+			disconnect();
 		}
 		
 		catch (Exception e)
@@ -655,7 +723,9 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		
 		finally
 		{
+			main.worker.halt();
 			main.dispose();
+			new LoginSplash();
 		}
 	}
 	
@@ -679,7 +749,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	public void disconnect()
 	{
 		LOG.write("Error: Connection lost from vCenter server");
-		main.worker.interrupt();
+		main.worker.halt();
 		JOptionPane.showMessageDialog(main, "Connection lost from vCenter server", "Error: Connection Lost", JOptionPane.ERROR_MESSAGE);
 		main.dispose();
 		new LoginSplash();
@@ -909,6 +979,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		catch (RuntimeException e)
 		{
 			LOG.write("Error: Runtime error in refreshing datacenter list", true);
+			disconnect();
 		}
 		
 		catch (RemoteException e)

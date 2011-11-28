@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import javax.swing.JLabel;
 import javax.swing.SpringLayout;
@@ -14,7 +14,7 @@ import vase.client.Utilities;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class GuiNorthPanel extends Panel
+public class MainNorthPanel extends Panel
 {
 	private static final long serialVersionUID = -7890898388384771207L;
 	private JLabel title;
@@ -22,7 +22,7 @@ public class GuiNorthPanel extends Panel
 	/**
 	 * Main Constructor
 	 */
-	public GuiNorthPanel()
+	public MainNorthPanel()
 	{
 		super(new SpringLayout(), false, DIM_CONNECT_MAIN_CONTENT_PANE_NORTH);
 		

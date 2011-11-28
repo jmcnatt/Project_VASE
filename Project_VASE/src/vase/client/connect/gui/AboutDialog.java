@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
@@ -17,6 +17,7 @@ import vase.client.Dialog;
 import vase.client.Panel;
 import vase.client.Utilities;
 import vase.client.Window;
+import vase.client.connect.ProjectConstraints;
 
 /**
  * About Dialog in the GuiMain, called by the GuiMenuBar

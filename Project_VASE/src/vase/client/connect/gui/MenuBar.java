@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import java.awt.Event;
 import java.awt.event.KeyEvent;
@@ -13,12 +13,14 @@ import javax.swing.JMenuItem;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
 
+import vase.client.connect.ProjectConstraints;
+
 /**
  * Menu Bar for the GuiMain.  ActionListener is the GuiMain
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class GuiMenuBar extends JMenuBar
+public class MenuBar extends JMenuBar
 {
 	private static final long serialVersionUID = -2655512390219540195L;
 	
@@ -33,7 +35,7 @@ public class GuiMenuBar extends JMenuBar
 	 * Builds the menu, requires GuiMain for actionListeners
 	 * @param main the Main GUI Window
 	 */
-	public GuiMenuBar(GuiActionListener listener)
+	public MenuBar(ActionEventListener listener)
 	{
 		add(createMenu("File", file, listener));
 		add(createMenu("VM", vm, listener));
@@ -50,7 +52,7 @@ public class GuiMenuBar extends JMenuBar
 	 * @param items the array of items in the menu
 	 * @return the created and formatted menu to be added to the menu bar
 	 */
-	private JMenu createMenu(String menuName, String[] items, GuiActionListener listener)
+	private JMenu createMenu(String menuName, String[] items, ActionEventListener listener)
 	{
 		JMenu menu = new JMenu(menuName);
 		if (!menu.getText().equals("View")) menu.setMnemonic(menu.getText().charAt(0));

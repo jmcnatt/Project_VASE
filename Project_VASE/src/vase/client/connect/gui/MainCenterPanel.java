@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import javax.swing.SpringLayout;
 
@@ -14,7 +14,7 @@ import vase.client.ScrollPane;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class GuiCenterPanel extends Panel
+public class MainCenterPanel extends Panel
 {
 	private static final long serialVersionUID = -7890898388384771207L;
 	private List list;
@@ -22,7 +22,7 @@ public class GuiCenterPanel extends Panel
 	/**
 	 * Main Constructor
 	 */
-	public GuiCenterPanel(List list)
+	public MainCenterPanel(List list)
 	{
 		super(new SpringLayout(), false, DIM_CONNECT_MAIN_CONTENT_PANE_CENTER);
 		this.list = list;

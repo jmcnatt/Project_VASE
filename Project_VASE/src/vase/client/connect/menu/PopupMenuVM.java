@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect menu package
  */
-package vase.client.connect;
+package vase.client.connect.menu;
 
 import java.awt.Event;
 import java.awt.event.ActionEvent;
@@ -12,6 +12,8 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 import javax.swing.KeyStroke;
+
+import vase.client.connect.CommandEngine;
 
 import com.vmware.vim25.mo.VirtualMachine;
 

@@ -7,10 +7,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
 
-import vase.client.connect.GuiMain;
-import vase.client.connect.ListDataRenderer;
-import vase.client.connect.LoginSplash;
-
 /**
  * Swing Constraints for all Gui/Swing components
  * Includes Fonts, Dimensions, Colors, etc needed as constants for any subclass 

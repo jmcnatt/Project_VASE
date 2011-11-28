@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect list package
  */
-package vase.client.connect;
+package vase.client.connect.list;
 
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -11,6 +11,9 @@ import javax.swing.SwingUtilities;
 import com.vmware.vim25.mo.VirtualMachine;
 
 import vase.client.List;
+import vase.client.connect.CommandEngine;
+import vase.client.connect.menu.PopupMenuVM;
+import vase.client.connect.ProjectConstraints;
 
 /**
  * Custom List MouseAdapter and ListSelectionListener class for List class

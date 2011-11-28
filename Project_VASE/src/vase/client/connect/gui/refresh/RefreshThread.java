@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui refresh package
  */
-package vase.client.connect;
+package vase.client.connect.gui.refresh;
 
 import java.util.ArrayList;
 
@@ -11,7 +11,9 @@ import javax.swing.SwingUtilities;
 import com.vmware.vim25.VirtualMachineSummary;
 import com.vmware.vim25.mo.VirtualMachine;
 
-import vase.client.ThreadExt;
+import vase.client.thread.ThreadExt;
+import vase.client.connect.ProjectConstraints;
+import vase.client.connect.gui.Main;
 
 /**
  * Refresh Thread Class
@@ -24,13 +26,13 @@ import vase.client.ThreadExt;
  */
 public class RefreshThread extends ThreadExt
 {
-	private GuiMain main;
+	private Main main;
 	
 	/**
 	 * Main Constructor
 	 * @param main the GuiMain instance containing attributes needed to be refreshed
 	 */
-	public RefreshThread(GuiMain main)
+	public RefreshThread(Main main)
 	{
 		this.main = main;
 	}

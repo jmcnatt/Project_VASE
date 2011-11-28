@@ -1,33 +1,32 @@
 /**
  * Project_VASE Client package
  */
-package vase.client;
+package vase.client.thread;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
-import vase.client.ThreadExt;
+import vase.client.LogWriter;
 
 /**
- * Displays StandardInput from a Process on the system log
- * <br />
- * Used when launching the console to write Process STDIN
+ * Displays StandardError from a Process on the System Log
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Deploy
+ * @see Process
  */
-public class ProcessInputThread extends ThreadExt
+public class ProcessErrorThread extends ThreadExt
 {
 	private InputStream stream;
 	private LogWriter log;
 	
 	/**
 	 * Main Constructor
-	 * @param stream the main inputstream from the process
+	 * @param stream the main errorstream from the process
 	 * @param log the log writer
 	 */
-	public ProcessInputThread(InputStream stream, LogWriter log)
+	public ProcessErrorThread(InputStream stream, LogWriter log)
 	{
 		this.stream = stream;
 		this.log = log;
@@ -63,6 +62,7 @@ public class ProcessInputThread extends ThreadExt
 			{
 				reader.close();
 			}
+			
 			catch (IOException e)
 			{
 				log.printStackTrace(e);

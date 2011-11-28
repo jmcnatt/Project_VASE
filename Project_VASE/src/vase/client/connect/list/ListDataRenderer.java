@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect list package
  */
-package vase.client.connect;
+package vase.client.connect.list;
 
 import java.awt.Color;
 import java.awt.Component;

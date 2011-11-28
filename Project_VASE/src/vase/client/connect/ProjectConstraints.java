@@ -37,7 +37,7 @@ public interface ProjectConstraints
 	 * Project_VASE Build information for AboutDialog
 	 * @see AboutDialog
 	 */
-	String BUILD = "301";
+	String BUILD = "302";
 	
 	/**
 	 * Project_VASE Staging information for AboutDialog
@@ -95,6 +95,12 @@ public interface ProjectConstraints
 	 * Directory to Ignore (contains templates)
 	 */
 	String TEMPLATE_DIR = CONFIG.getTemplateDir();
+	
+	/**
+	 * Root folder of the project where new deployments and teams are sent
+	 * @see ConfigReader#getProjectDir()
+	 */
+	String ROOT_FOLDER = CONFIG.getProjectDir();
 	
 	/**
 	 * Target path for VMRC program, excluding C:\Program Files\

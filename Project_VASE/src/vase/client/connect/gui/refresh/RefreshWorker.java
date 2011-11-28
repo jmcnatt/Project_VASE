@@ -1,9 +1,11 @@
 /**
  * Project_VASE Connect package
  */
-package vase.client.connect;
+package vase.client.connect.gui.refresh;
 
-import vase.client.ThreadExt;
+import vase.client.thread.ThreadExt;
+import vase.client.connect.ProjectConstraints;
+import vase.client.connect.gui.Main;
 
 /**
  * Refresher that waits the REFRESH_INTERVAL in seconds and then refreshes the data
@@ -13,16 +15,17 @@ import vase.client.ThreadExt;
  * @see GuiMain
  * @see ProjectConstraints#REFRESH_INTERVAL
  */
-class RefresherWorker extends ThreadExt
+public class RefreshWorker extends ThreadExt
 {
-	private GuiMain main;
+	private Main main;
 	
 	/**
 	 * Main Constructor.  Starts the thread
 	 */
-	public RefresherWorker(GuiMain main)
+	public RefreshWorker(Main main)
 	{
 		this.main = main;
+		thread = this;
 		start();
 	}
 	
@@ -31,11 +34,14 @@ class RefresherWorker extends ThreadExt
 	 */
 	public void run()
 	{
-		while (true)
+		Thread thisThread = Thread.currentThread();
+		
+		while (thread == thisThread)
 		{
 			try
 			{
 				sleep(ProjectConstraints.REFRESH_INTERVAL * 1000);
+				if (!(thread == thisThread)) break;
 				new RefreshThread(main).start();
 			}
 			

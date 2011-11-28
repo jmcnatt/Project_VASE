@@ -23,6 +23,7 @@ public class ConfigReader
 	private int currentBlock = 1;
 	private String datacenterName = "VASE";
 	private String templateDir = "Templates";
+	private String projectDir = "Project_VASE";
 	private String pathToVMRC;
 	private String targetDatastore;
 	private String hostUsername;
@@ -90,6 +91,15 @@ public class ConfigReader
 	public String getTemplateDir()
 	{
 		return templateDir;
+	}
+	
+	/**
+	 * Gets the directory holding the main project
+	 * @return the the directory holding the project
+	 */
+	public String getProjectDir()
+	{
+		return projectDir;
 	}
 
 	/**
@@ -168,6 +178,11 @@ public class ConfigReader
 					else if (variable.equalsIgnoreCase("TEMPLATEDIR"))
 					{
 						templateDir = value;
+					}
+					
+					else if (variable.equalsIgnoreCase("PROJECTDIR"))
+					{
+						projectDir = value;
 					}
 					
 					else if (variable.equalsIgnoreCase("VMRC_PATH"))

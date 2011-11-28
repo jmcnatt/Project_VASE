@@ -1,7 +1,7 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Connect gui package
  */
-package vase.client.connect;
+package vase.client.connect.gui;
 
 import java.awt.Desktop;
 import java.awt.event.ActionEvent;
@@ -14,6 +14,7 @@ import javax.swing.JOptionPane;
 import com.vmware.vim25.mo.VirtualMachine;
 
 import vase.client.HelpWindow;
+import vase.client.connect.ProjectConstraints;
 
 /**
  * Main action listener for GuiMain
@@ -22,17 +23,17 @@ import vase.client.HelpWindow;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Deploy
  * @see GuiMain
- * @see ActionListener
+ * @see ActionEventListener
  */
-public class GuiActionListener implements ActionListener, ProjectConstraints
+public class ActionEventListener implements ActionListener, ProjectConstraints
 {
-	private GuiMain main;
+	private Main main;
 	
 	/**
 	 * Main Constructor
 	 * @param GuiMain main
 	 */
-	public GuiActionListener(GuiMain main)
+	public ActionEventListener(Main main)
 	{
 		this.main = main;
 	}
