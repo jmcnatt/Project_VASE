@@ -17,6 +17,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import vase.client.deploy.vmo.DeployedVirtualMachine;
+
 /**
  * Responsible for reading the HashMap of VMname to the flag from
  * settings.bin and loading it into ProjectConstraits, and then
@@ -80,7 +82,7 @@ public class SettingsReader implements ProjectConstraints
 			catch (Exception e)
 			{
 				LOG.write("Settings not loaded", true);
-				e.printStackTrace();
+				LOG.printStackTrace(e);
 			}		
 		}
 		
@@ -93,8 +95,6 @@ public class SettingsReader implements ProjectConstraints
 		{
 			LOG.write("I/O Exception caught while loading settings.bin", true);
 			LOG.printStackTrace(e);
-			
-			e.printStackTrace();
 		}
 			
 		finally

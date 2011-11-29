@@ -14,8 +14,17 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
 import vase.client.InterfaceConstraints;
-import vase.client.ProcessErrorThread;
-import vase.client.ProcessInputThread;
+import vase.client.deploy.gui.Main;
+import vase.client.deploy.gui.Tab;
+import vase.client.deploy.gui.tab.DeploymentTab;
+import vase.client.deploy.utils.ReportGenerator;
+import vase.client.deploy.utils.report.ReportGeneratorFileFilter;
+import vase.client.deploy.vmo.DeployedVirtualMachine;
+import vase.client.deploy.vmo.FolderExt;
+import vase.client.deploy.vmo.Template;
+import vase.client.deploy.vmo.VirtualMachineExt;
+import vase.client.thread.ProcessErrorThread;
+import vase.client.thread.ProcessInputThread;
 
 import com.vmware.vim25.HostNetworkInfo;
 import com.vmware.vim25.HostVirtualNic;
@@ -45,7 +54,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	private String currentServer;
 	private String currentUsername;
 	private String currentPassword;
-	private GuiDeploymentTab deployTab;
+	private DeploymentTab deployTab;
 	
 	/**
 	 * Server Instance handling the connection to VCENTER
@@ -57,7 +66,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 * GuiMain instance
 	 * @see GuiMain
 	 */
-	public GuiMain main;
+	public Main main;
 	
 	/**
 	 * The project Datacenter
@@ -162,7 +171,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 * @param ServiceInstance si
 	 * @see LoginSplash
 	 */
-	public CommandEngine(ServiceInstance si, GuiMain main)
+	public CommandEngine(ServiceInstance si, Main main)
 	{
 		this.si = si;
 		this.main = main;
@@ -762,7 +771,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void setDeploymentTab(Tab deployTab)
 	{
-		this.deployTab = (GuiDeploymentTab) deployTab;
+		this.deployTab = (DeploymentTab) deployTab;
 	}
 	
 	/**

@@ -68,6 +68,8 @@ public class LogWriter
 			}
 			
 			writer = new PrintWriter(fos);
+			write("------------------------------------------------------------------------");
+			write("Program operation began");
 	}
 	
 	/**

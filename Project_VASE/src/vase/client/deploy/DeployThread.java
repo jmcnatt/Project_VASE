@@ -6,7 +6,9 @@ package vase.client.deploy;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
-import vase.client.ThreadExt;
+import vase.client.deploy.vmo.DeployedVirtualMachine;
+import vase.client.deploy.vmo.Script;
+import vase.client.thread.ThreadExt;
 
 import com.vmware.vim25.NoPermission;
 import com.vmware.vim25.VirtualDevice;

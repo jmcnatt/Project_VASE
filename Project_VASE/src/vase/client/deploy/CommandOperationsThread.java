@@ -3,7 +3,7 @@
  */
 package vase.client.deploy;
 
-import vase.client.ThreadExt;
+import vase.client.thread.ThreadExt;
 
 import com.vmware.vim25.mo.Folder;
 import com.vmware.vim25.mo.ManagedEntity;

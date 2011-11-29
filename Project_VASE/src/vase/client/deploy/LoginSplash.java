@@ -24,6 +24,7 @@ import vase.client.HelpWindow;
 import vase.client.Panel;
 import vase.client.Utilities;
 import vase.client.Window;
+import vase.client.deploy.gui.Main;
 
 import com.vmware.vim25.mo.ServiceInstance;
 
@@ -267,7 +268,7 @@ public class LoginSplash extends Window implements ActionListener
 				jlError.setText("");
 				
 				//Build the GuiMain
-				GuiMain main = new GuiMain(si);
+				Main main = new Main(si);
 				
 				//Set CommandEngine credentials for Scripts
 				main.engine.setCurrentPassword(password);
