@@ -976,8 +976,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		
 		catch (NullPointerException e)
 		{
-			e.printStackTrace();
-			disconnect();
+			LOG.write("Could not gather object data", true);
 		}
 		
 		catch (ManagedObjectNotFound e)
@@ -999,7 +998,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		catch (Exception e)
 		{
 			LOG.write("Error in Refreshing data: " + e.getMessage(), true);
-			e.printStackTrace();
+			LOG.printStackTrace(e);
 		}
 	}
 }

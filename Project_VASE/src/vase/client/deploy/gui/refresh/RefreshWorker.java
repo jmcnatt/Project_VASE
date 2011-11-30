@@ -47,6 +47,11 @@ public class RefreshWorker extends ThreadExt
 				new RefreshThread(main).start();				
 			}
 			
+			catch (NullPointerException e)
+			{
+				ProjectConstraints.LOG.printStackTrace(e);
+			}
+			
 			catch (InterruptedException e)
 			{
 				ProjectConstraints.LOG.printStackTrace(e);
