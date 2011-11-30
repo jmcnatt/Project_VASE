@@ -367,7 +367,7 @@ public class CommandEngine implements ProjectConstraints
 		
 		catch (Exception e)
 		{
-			LOG.printStackTrace(e);
+			LOG.write("Error logging off. Could not close server connection successfully", true);
 		}
 		
 		finally

@@ -745,10 +745,22 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public void quit()
 	{
-		saveSettings();
-		si.getServerConnection().logout();
-		main.dispose();
-		System.exit(0);
+		try
+		{
+			saveSettings();
+			si.getServerConnection().logout();
+		}
+		
+		catch (Exception e)
+		{
+			LOG.write("Error logging off. Could not close server connection successfully", true);
+		}
+		
+		finally
+		{
+			main.dispose();
+			System.exit(0);
+		}
 	}
 	
 	/**
