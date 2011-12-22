@@ -4,6 +4,6 @@
 	<classpathentry kind="src" path="resources"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="resources/external/dom4j-1.6.1.jar"/>
-	<classpathentry kind="lib" path="resources/external/vijava2120100824src.jar"/>
+	<classpathentry kind="lib" path="resources/external/vijava520110926src.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
