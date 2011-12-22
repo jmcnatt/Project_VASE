@@ -3,33 +3,48 @@
  */
 package vase.client.connect;
 
-import vase.client.thread.ThreadExt;
+import vase.client.Engine;
+import vase.client.thread.EngineOperationsThread;
 
-import com.vmware.vim25.mo.Task;
+import com.vmware.vim25.InvalidState;
+import com.vmware.vim25.ToolsUnavailable;
 import com.vmware.vim25.mo.VirtualMachine;
 
 /**
  * Thread to handle power operations for VirtualMachines
+ * Commands called by the CommandEngine and then executed in this Thread
  * <br />
- * Pass in a VirtualMachineExt object from which the VMware VirtualMachine
- * can be extracted
- * @author James McNatt
- * @version Project_VASE 0.1.0
+ * Logic handled by superclass EngineOperationsThread
+ * @author James McNatt & Brenton Kapral
+ * @version Project_VASE Deploy
+ * @see EngineOperationsThread
  */
-class CommandOperationsThread extends ThreadExt
+public class CommandOperationsThread extends EngineOperationsThread
 {
-	private VirtualMachine vm;
-	private int command;
 	private CommandEngine engine;
 	
 	/**
-	 * Main Constructor, takes in a VirtualMachineExt object
-	 * @param vm
+	 * Main Constructor
+	 * Calls superclass's constructor
+	 * @param vm the Virtual Machine object
+	 * @param command integer representation of the command
+	 * @param engine the CommandEngine instance
 	 */
 	public CommandOperationsThread(VirtualMachine vm, int command, CommandEngine engine)
 	{
-		this.vm = vm;
-		this.command = command;
+		super(vm, command, ProjectConstraints.LOG);
+		this.engine = engine;
+	}
+	
+	/**
+	 * Overloaded constructor for renaming a virtual machine or moving a virtual machine
+	 * @param vm the Virtual Machine object
+	 * @param command integer representation of the command
+	 * @param name the new name of the virtual machine
+	 */
+	public CommandOperationsThread(VirtualMachine vm, int command, CommandEngine engine, String name)
+	{
+		super(vm, command, ProjectConstraints.LOG, name);
 		this.engine = engine;
 	}
 	
@@ -42,39 +57,39 @@ class CommandOperationsThread extends ThreadExt
 	{
 		switch(command)
 		{
-			case 1:
+			case Engine.POWER_ON:
 			{
-				powerOn(vm);
+				powerOn();
 				break;
 			}
 			
-			case 2:
+			case Engine.POWER_OFF:
 			{
-				powerOff(vm);
+				powerOff();
 				break;
 			}
 			
-			case 3:
+			case Engine.SUSPEND:
 			{
-				suspend(vm);
+				suspendVM();
 				break;
 			}
 			
-			case 4:
+			case Engine.RESET:
 			{
-				reset(vm);
+				reset();
 				break;
 			}
 			
-			case 5:
+			case Engine.SHUTDOWN:
 			{
-				shutdown(vm);
+				shutdown();
 				break;
 			}
 			
-			case 6:
+			case Engine.RESTART:
 			{
-				restart(vm);
+				restart();
 				break;
 			}
 		}
@@ -82,158 +97,163 @@ class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Powers on a Virtual Machine
-	 * @param vm the virtual machine
 	 */
-	private void powerOn(VirtualMachine vm)
+	public void powerOn()
 	{
 		try
 		{
-			Task powerOn = vm.powerOnVM_Task(null);
-			if (powerOn.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to PoweredOn");
-				engine.main.startRefreshThread();
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not power on " + vm.getName());
-			}
+			super.powerOn();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Powered On");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not power on " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in PowerOn command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not power off " + vm.getName());
+			log.printStackTrace(e);
 		}
+		
+		finally
+		{		
+			engine.main.startRefreshThread();
+		}		
 	}
 	
 	/**
 	 * Powers off a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void powerOff(VirtualMachine vm)
+	public void powerOff()
 	{
 		try
 		{
-			Task powerOff = vm.powerOffVM_Task();
-			if (powerOff.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to PoweredOff");
-				engine.main.startRefreshThread();
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not power off " + vm.getName());
-			}
+			super.powerOff();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Powered Off");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not power off " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in PowerOff command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not power off " + vm.getName());
+			log.printStackTrace(e);
+		}
+		
+		finally
+		{
+			engine.main.startRefreshThread();
 		}
 	}
 	
 	/**
 	 * Suspends a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void suspend(VirtualMachine vm)
+	public void suspendVM()
 	{
 		try
 		{
-			Task suspend = vm.suspendVM_Task();
-			if (suspend.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to Suspended");
-				engine.main.startRefreshThread();
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not suspend " + vm.getName());
-			}
+			super.suspendVM();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Suspended");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not suspend " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Suspend command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not suspend " + vm.getName());
+			log.printStackTrace(e);
+		}
+		
+		finally
+		{
+			engine.main.startRefreshThread();
 		}
 	}
 	
 	/**
 	 * Resets a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void reset(VirtualMachine vm)
+	public void reset()
 	{
 		try
 		{
-			Task reset = vm.resetVM_Task();
-			
-			if (reset.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " is Reseting");
-				engine.main.startRefreshThread();
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not reset " + vm.getName());
-			}
+			super.reset();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Reset");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not reset " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Reset command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not reset " + vm.getName());
+			log.printStackTrace(e);
+		}
+		
+		finally
+		{
+			engine.main.startRefreshThread();
 		}
 	}
 	
 	/**
 	 * Shuts down a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void shutdown(VirtualMachine vm)
+	public void shutdown()
 	{
 		try
 		{
-			vm.shutdownGuest();
-			ProjectConstraints.LOG.write(vm.getName() + " is shutting down");
+			super.shutdown();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Shut Down");
+		}
+		
+		catch (ToolsUnavailable e)
+		{
+			log.write("Error in shutting down " + vm.getName() + ". Could not communicate with VMware Tools");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not shutdown " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Shutdown command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not shutdown " + vm.getName());
+			log.printStackTrace(e);
 		}
 	}
 	
 	/**
 	 * Restarts a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void restart(VirtualMachine vm)
+	public void restart()
 	{
 		try
 		{
-			vm.rebootGuest();
-			ProjectConstraints.LOG.write(vm.getName() + " is restarting");
+			super.reboot();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Rebooted");
+		}
+		
+		catch (ToolsUnavailable e)
+		{
+			log.write("Error in rebooting " + vm.getName() + ". Could not communicate with VMware Tools");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not restart " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Restart command: " + e.getMessage(), false);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not reboot " + vm.getName());
+			log.printStackTrace(e);
 		}
 	}
 }

@@ -3,48 +3,53 @@
  */
 package vase.client.deploy;
 
-import vase.client.thread.ThreadExt;
+import vase.client.Engine;
+import vase.client.thread.EngineOperationsThread;
 
+import com.vmware.vim25.DuplicateName;
+import com.vmware.vim25.InvalidFolder;
+import com.vmware.vim25.InvalidName;
+import com.vmware.vim25.InvalidState;
+import com.vmware.vim25.ToolsUnavailable;
+import com.vmware.vim25.VimFault;
 import com.vmware.vim25.mo.Folder;
-import com.vmware.vim25.mo.ManagedEntity;
-import com.vmware.vim25.mo.Task;
 import com.vmware.vim25.mo.VirtualMachine;
 
 /**
  * Thread to handle power operations for VirtualMachines
  * Commands called by the CommandEngine and then executed in this Thread
+ * <br />
+ * Logic handled by superclass EngineOperationsThread
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Deploy
+ * @see EngineOperationsThread
  */
-public class CommandOperationsThread extends ThreadExt
+public class CommandOperationsThread extends EngineOperationsThread
 {
-	private VirtualMachine vm;
-	private int command;
-	private String name;
 	private CommandEngine engine;
 	
 	/**
-	 * Main Constructor, takes in a VirtualMachineExt object
-	 * @param vm
+	 * Main Constructor
+	 * Calls superclass's constructor
+	 * @param vm the Virtual Machine object
+	 * @param command integer representation of the command
+	 * @param engine the CommandEngine instance
 	 */
 	public CommandOperationsThread(VirtualMachine vm, int command, CommandEngine engine)
 	{
-		this.vm = vm;
-		this.command = command;
+		super(vm, command, ProjectConstraints.LOG);
 		this.engine = engine;
 	}
 	
 	/**
 	 * Overloaded constructor for renaming a virtual machine or moving a virtual machine
-	 * @param vm the virtual machine
-	 * @param command the command to execute
+	 * @param vm the Virtual Machine object
+	 * @param command integer representation of the command
 	 * @param name the new name of the virtual machine
 	 */
 	public CommandOperationsThread(VirtualMachine vm, int command, CommandEngine engine, String name)
 	{
-		this.vm = vm;
-		this.command = command;
-		this.name = name;
+		super(vm, command, ProjectConstraints.LOG, name);
 		this.engine = engine;
 	}
 	
@@ -57,57 +62,57 @@ public class CommandOperationsThread extends ThreadExt
 	{
 		switch(command)
 		{
-			case 1:
+			case Engine.POWER_ON:
 			{
-				powerOn(vm);
+				powerOn();
 				break;
 			}
 			
-			case 2:
+			case Engine.POWER_OFF:
 			{
-				powerOff(vm);
+				powerOff();
 				break;
 			}
 			
-			case 3:
+			case Engine.SUSPEND:
 			{
-				suspend(vm);
+				suspendVM();
 				break;
 			}
 			
-			case 4:
+			case Engine.RESET:
 			{
-				reset(vm);
+				reset();
 				break;
 			}
 			
-			case 5:
+			case Engine.SHUTDOWN:
 			{
-				shutdown(vm);
+				shutdown();
 				break;
 			}
 			
-			case 6:
+			case Engine.RESTART:
 			{
-				restart(vm);
+				restart();
 				break;
 			}
 			
-			case 7:
+			case Engine.DELETE:
 			{
-				delete(vm);
+				delete();
 				break;
 			}
 			
-			case 8:
+			case Engine.RENAME:
 			{
-				rename(vm);
+				rename();
 				break;
 			}
 			
-			case 9:
+			case Engine.MOVE:
 			{
-				move(vm, name);
+				setTeam();
 				break;
 			}
 		}
@@ -115,62 +120,50 @@ public class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Powers on a Virtual Machine
-	 * @param vm the virtual machine
 	 */
-	private void powerOn(VirtualMachine vm)
+	public void powerOn()
 	{
 		try
 		{
-			Task powerOn = vm.powerOnVM_Task(null);
-			if (powerOn.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to PoweredOn");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not power on " + vm.getName());
-			}
+			super.powerOn();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Powered On");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not power on " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in PowerOn command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not power off " + vm.getName());
+			log.printStackTrace(e);
 		}
 		
 		finally
-		{
+		{		
 			engine.main.startRefreshThread();
-		}
+		}		
 	}
 	
 	/**
 	 * Powers off a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void powerOff(VirtualMachine vm)
+	public void powerOff()
 	{
 		try
 		{
-			Task powerOff = vm.powerOffVM_Task();
-			if (powerOff.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to PoweredOff");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not power off " + vm.getName());
-			}
+			super.powerOff();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Powered Off");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not power off " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in PowerOff command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not power off " + vm.getName());
+			log.printStackTrace(e);
 		}
 		
 		finally
@@ -181,29 +174,23 @@ public class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Suspends a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void suspend(VirtualMachine vm)
+	public void suspendVM()
 	{
 		try
 		{
-			Task suspend = vm.suspendVM_Task();
-			if (suspend.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed state to Suspended");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not suspend " + vm.getName());
-			}
+			super.suspendVM();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Suspended");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not suspend " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Suspend command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not suspend " + vm.getName());
+			log.printStackTrace(e);
 		}
 		
 		finally
@@ -214,29 +201,23 @@ public class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Resets a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void reset(VirtualMachine vm)
+	public void reset()
 	{
 		try
 		{
-			Task reset = vm.resetVM_Task();
-			if (reset.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " is Reseting");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not reset " + vm.getName());
-			}
+			super.reset();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Reset");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not reset " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Reset command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not reset " + vm.getName());
+			log.printStackTrace(e);
 		}
 		
 		finally
@@ -247,71 +228,82 @@ public class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Shuts down a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void shutdown(VirtualMachine vm)
+	public void shutdown()
 	{
 		try
 		{
-			vm.shutdownGuest();
-			ProjectConstraints.LOG.write(vm.getName() + " is shutting down");
+			super.shutdown();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Shut Down");
+		}
+		
+		catch (ToolsUnavailable e)
+		{
+			log.write("Error in shutting down " + vm.getName() + ". Could not communicate with VMware Tools");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not shutdown " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Shutdown command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not shutdown " + vm.getName());
+			log.printStackTrace(e);
 		}
 	}
 	
 	/**
 	 * Restarts a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void restart(VirtualMachine vm)
+	public void restart()
 	{
 		try
 		{
-			vm.rebootGuest();
-			ProjectConstraints.LOG.write(vm.getName() + " is restarting");
+			super.reboot();
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be Rebooted");
+		}
+		
+		catch (ToolsUnavailable e)
+		{
+			log.write("Error in rebooting " + vm.getName() + ". Could not communicate with VMware Tools");
 		}
 		
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not restart " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Restart command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not reboot " + vm.getName());
+			log.printStackTrace(e);
 		}
 	}
 	
 	/**
 	 * Renames a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void rename(VirtualMachine vm)
+	public void rename()
 	{
 		try
 		{
-			Task rename = vm.rename_Task(name);
+			super.rename();
+		}
 		
+		catch (InvalidName e)
+		{
+			log.write("Error: " + vm.getName() + " not a valid name");
+		}
 		
-			if (rename.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " rename successful");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not rename " + vm.getName());
-			}
+		catch (DuplicateName e)
+		{
+			log.write("Error: " + vm.getName() + " is a duplicate name in the inventory");
 		}
 	
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not rename " + vm.getName());
-			ProjectConstraints.LOG.write("Exception in Rename command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not rename " + vm.getName());
+			log.printStackTrace(e);
 		}
 		
 		finally
@@ -322,31 +314,23 @@ public class CommandOperationsThread extends ThreadExt
 	
 	/**
 	 * Deletes a virtual machine
-	 * @param vm the virtual machine
 	 */
-	private void delete(VirtualMachine vm)
+	public void delete()
 	{
 		try
 		{
-			String name = vm.getName();
-			Task delete = vm.destroy_Task();
+			super.delete();
+		}
 		
-			if (delete.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(name + " deleted");
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not delete " + name);
-			}
+		catch (VimFault e)
+		{
+			log.write("Error deleting " + vm.getName() + ". Resource in use");
 		}
 	
 		catch (Exception e)
 		{
-			ProjectConstraints.LOG.write("Error: Could not delete " + name);
-			ProjectConstraints.LOG.write("Exception in Delete command: " + e.getMessage(), true);
-			ProjectConstraints.LOG.printStackTrace(e);
+			log.write("Error: Could not delete " + name);
+			log.printStackTrace(e);
 		}
 		
 		finally
@@ -356,11 +340,9 @@ public class CommandOperationsThread extends ThreadExt
 	}
 	
 	/**
-	 * Moves a specified VM to a new folder in the datacenter, referencing the VM's Team
-	 * @param vm the Virtual Machine to move
-	 * @param location the new folder for the Virtual Machine
+	 * Moves a specified VM to a new folder in the <PROJECT_DIR>, representing the VM's Team
 	 */
-	private void move(VirtualMachine vm, String location)
+	public void setTeam()
 	{
 		Folder folder = null;
 		
@@ -371,7 +353,7 @@ public class CommandOperationsThread extends ThreadExt
 				if (each instanceof Folder)
 				{
 					Folder thisFolder = (Folder) each;
-					if (thisFolder.getName().equals(location))
+					if (thisFolder.getName().equals(name))
 					{
 						folder = thisFolder;
 					}
@@ -380,14 +362,14 @@ public class CommandOperationsThread extends ThreadExt
 			
 			if (folder == null)
 			{
-				engine.rootDir.createFolder(location);
-				ProjectConstraints.LOG.write("Folder created for " + location, true);
+				engine.rootDir.createFolder(name);
+				ProjectConstraints.LOG.write("Folder created for " + name, true);
 				for (Object each : engine.rootDir.getChildEntity())
 				{
 					if (each instanceof Folder)
 					{
 						Folder thisFolder = (Folder) each;
-						if (thisFolder.getName().equals(location))
+						if (thisFolder.getName().equals(name))
 						{
 							folder = thisFolder;
 						}
@@ -395,18 +377,23 @@ public class CommandOperationsThread extends ThreadExt
 				}
 			}
 			
-			ManagedEntity[] thisVM = {vm};
-			Task task = folder.moveIntoFolder_Task(thisVM);
-			
-			if (task.waitForTask() == Task.SUCCESS)
-			{
-				ProjectConstraints.LOG.write(vm.getName() + " changed to " + location);
-			}
-			
-			else
-			{
-				ProjectConstraints.LOG.write("Error: Could not change " + vm.getName() + " to " + location);
-			}
+			super.setTeam(folder);
+		}
+		
+		catch (InvalidState e)
+		{
+			log.write("Error: " + vm.getName() + " not in proper state to be moved to " + name);
+		}
+		
+		catch (DuplicateName e)
+		{
+			log.write("Error in moving " + vm.getName() + ". Duplicate name in destination directory");
+		}
+		
+		catch (InvalidFolder e)
+		{
+			log.write("Error: Invalid folder specification");
+			log.printStackTrace(e);
 		}
 		
 		catch (Exception e)

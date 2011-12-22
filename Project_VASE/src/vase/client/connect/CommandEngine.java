@@ -9,24 +9,19 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
 
-import vase.client.thread.ProcessErrorThread;
-import vase.client.thread.ProcessInputThread;
+import vase.client.Engine;
+import vase.client.connect.gui.LoginSplash;
 import vase.client.connect.gui.Main;
 
-import com.vmware.vim25.HostNetworkInfo;
-import com.vmware.vim25.HostVirtualNic;
 import com.vmware.vim25.InvalidProperty;
-import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.RuntimeFault;
 import com.vmware.vim25.VirtualMachineSummary;
 import com.vmware.vim25.mo.Datacenter;
 import com.vmware.vim25.mo.Folder;
-import com.vmware.vim25.mo.HostSystem;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ManagedEntity;
 import com.vmware.vim25.mo.ServiceInstance;
 import com.vmware.vim25.mo.VirtualMachine;
-import com.vmware.vim25.mo.util.MorUtil;
 
 /**
  * Command Engine that interfaces with VMware vCenter.  Sends power operations to the 
@@ -35,12 +30,11 @@ import com.vmware.vim25.mo.util.MorUtil;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Connect
  */
-public class CommandEngine implements ProjectConstraints
+public class CommandEngine extends Engine implements ProjectConstraints
 {
-	private String currentUsername;
-	private String currentServer;
-	private ServiceInstance si;	
-	private Datacenter dc = null;
+	/**
+	 * Root VM Directory
+	 */
 	private Folder rootDir = null;
 	
 	/**
@@ -49,44 +43,14 @@ public class CommandEngine implements ProjectConstraints
 	public Main main;
 	
 	/**
-	 * Power on the virtual machine
-	 */
-	public static final int POWER_ON = 1;
-	
-	/**
-	 * Power off the virtual machine
-	 */
-	public static final int POWER_OFF = 2;
-	
-	/**
-	 * Suspend the virtual machine
-	 */
-	public static final int SUSPEND = 3;
-	
-	/**
-	 * Reset the virtual machine
-	 */
-	public static final int RESET = 4;
-	
-	/**
-	 * Shutdown the virtual machine
-	 */
-	public static final int SHUTDOWN = 5;
-	
-	/**
-	 * Restart the virtual machine
-	 */
-	public static final int RESTART = 6;
-	
-	/**
 	 * Main Constructor
 	 * @param si the service instance created by the LoginSplash
 	 * @param the main Gui window
 	 */
 	public CommandEngine(ServiceInstance si, Main main)
 	{
+		super(si);
 		this.main = main;
-		this.si = si;
 		
 		try
 		{
@@ -215,93 +179,12 @@ public class CommandEngine implements ProjectConstraints
 	}
 	
 	/**
-	 * Launches the VM's console
-	 * <br />
-	 * If the VM has been removed or is no longer reachable, Exception will be thrown and a dialog box
-	 * will appear to inform the user.  Output of the process is appended to the log file.
-	 * @param name the VM name
+	 * Launches the VM's console, calls the superclass's method
+	 * @param vm the Virtual Machine
 	 */
 	public void launchConsole(VirtualMachine vm)
 	{
-		try
-		{
-			//Find host of VM
-			ManagedObjectReference hostReference = vm.getSummary().runtime.host;
-			ManagedEntity host = MorUtil.createExactManagedEntity(si.getServerConnection(), hostReference);
-			
-			//Get Network info
-			HostNetworkInfo networkInfo = ((HostSystem) host).getConfig().network;
-			HostVirtualNic[] virtualNics = null;
-			HostVirtualNic[] serviceNics = null;
-			String ipAddress = null;
-			
-			if (networkInfo.getConsoleVnic() != null)
-			{
-				serviceNics = networkInfo.getConsoleVnic();
-			}
-			
-			if (networkInfo.getVnic() != null)
-			{
-				virtualNics = networkInfo.getVnic();
-			}
-			
-			if (serviceNics != null)
-			{
-				ipAddress = serviceNics[0].getSpec().getIp().ipAddress;
-			}
-			
-			else if (virtualNics != null)
-			{
-				ipAddress = virtualNics[0].getSpec().getIp().ipAddress;
-			}
-
-			String vmxPath = vm.getConfig().getFiles().getVmPathName();
-			String pathToVMRC = System.getenv("ProgramFiles") + "\\" + VMRC;
-			String args = " -h " + ipAddress + " -u " + HOST_USERNAME + " -p " + HOST_PASSWORD;
-			
-			//Full Screen
-			if (SETTINGS_READER.fullScreen)
-			{
-				args += " -X ";
-			}
-			
-			else
-			{
-				args += " ";
-			}
-			
-			//VM Datastore and VMX file location
-			args += "-m \"" + vmxPath + "\"";
-			
-			LOG.write("Launching console for " + vm.getName());
-			LOG.write(pathToVMRC + args, false);
-			Process p = Runtime.getRuntime().exec(pathToVMRC + args);
-			
-			Thread inputThread = new ProcessInputThread(p.getInputStream(), LOG);
-			Thread errorThread = new ProcessErrorThread(p.getErrorStream(), LOG);
-			
-			inputThread.start();
-			errorThread.start();
-			p.getOutputStream().close();			
-		}
-		
-		catch (NullPointerException e)
-		{
-			JOptionPane.showMessageDialog(main, "Error: Could not access information related to the Virtual Machine Host", 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			LOG.printStackTrace(e);
-		}
-		
-		catch (RuntimeException e)
-		{
-			disconnect();
-		}
-		
-		catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(main, "Error: Could not locate virtual machine in the datacenter", "Error", JOptionPane.ERROR_MESSAGE);
-			LOG.printStackTrace(e);
-		}
+		super.launchConsole(vm, LOG, main, VMRC, HOST_USERNAME, HOST_PASSWORD, SETTINGS_READER.fullScreen);
 	}
 	
 	/**
@@ -389,54 +272,6 @@ public class CommandEngine implements ProjectConstraints
 		LOG.write("Settings Saved Successfully");
 	}
 
-	/**
-	 * Gets the current user logged in
-	 * <br />
-	 * Saved to the settings file when called by savedSettings()
-	 * @return the currentUsername
-	 * @see CommandEngine#saveSettings()
-	 */
-	public String getCurrentUsername()
-	{
-		return currentUsername;
-	}
-
-	/**
-	 * Sets the current user logged in
-	 * <br />
-	 * Called during the login() method in the LoginSplash
-	 * @param currentUsername the currentUsername to set
-	 * @see LoginSplash
-	 */
-	public void setCurrentUsername(String currentUsername)
-	{
-		this.currentUsername = currentUsername;
-	}
-
-	/**
-	 * Gets the current vCenter server
-	 * <br />
-	 * Saved to the settings file when called by savedSettings()
-	 * @return the currentServer
-	 * @see CommandEngine#saveSettings()
-	 */
-	public String getCurrentServer()
-	{
-		return currentServer;
-	}
-
-	/**
-	 * Sets the current vCenter server
-	 * <br />
-	 * Called during the login() method in the LoginSplash
-	 * @param currentServer the currentServer to set
-	 * @see LoginSplash
-	 */
-	public void setCurrentServer(String currentServer)
-	{
-		this.currentServer = currentServer;
-	}
-	
 	/**
 	 * Powers on a virtual machine using an OperationsThread
 	 * @param vm the virtual machine

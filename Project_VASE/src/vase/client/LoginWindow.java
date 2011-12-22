@@ -1,56 +1,80 @@
 /**
- * Project_VASE Connect package
+ * Project_VASE Client package
  */
-package vase.client.connect;
+package vase.client;
 
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.rmi.RemoteException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
-import vase.client.HelpWindow;
-import vase.client.Panel;
-import vase.client.Utilities;
-import vase.client.Window;
-import vase.client.connect.gui.Main;
-
-import com.vmware.vim25.mo.ServiceInstance;
-
 /**
- * Displays the login prompt before the GuiMain is called
- * <strong>Note: </strong>Contains the main method for the project
+ * Login Splash superclass
+ * Provides framework for creating a Login Splash to connect to vCenter and start the software
  * @author James McNatt & Brenton Kapral
- * @version Project_VASE Connect
+ * @version Project_VASE
  */
-public class LoginSplash extends Window implements ActionListener
+public class LoginWindow extends Window
 {
-	private static final long serialVersionUID = -8409015528275680765L;
-	
-	private JButton jbLogin, jbCancel, jbHelp;
-	private JTextField jtfServer;
-	private JTextField jtfUsername;
-	private JPasswordField jtfPassword;
-	private JTextArea jtaInfo;
-	private JLabel jlError;
+	private static final long serialVersionUID = 846718139335973947L;
 	
 	/**
-	 * Main Constructor that builds the LoginSplash
+	 * Login button
 	 */
-	public LoginSplash()
+	public JButton jbLogin;
+	
+	/**
+	 * Cancel button
+	 */
+	public JButton jbCancel;
+	
+	/**
+	 * Help button
+	 */
+	public JButton jbHelp;
+	
+	/**
+	 * Server text field
+	 */
+	public JTextField jtfServer;
+	
+	/**
+	 * Username text field
+	 */
+	public JTextField jtfUsername;
+	
+	/**
+	 * Password field
+	 */
+	public JPasswordField jtfPassword;
+	
+	/**
+	 * Information text area
+	 */
+	public JTextArea jtaInfo;
+	
+	/**
+	 * Identifier for Project_VASE Connect splash image
+	 */
+	public static final int CONNECT_SPLASH = 1;
+	
+	/**
+	 * Identifier for Project_VASE Deploy splash image
+	 */
+	public static final int DEPLOY_SPLASH = 2;
+	
+	/**
+	 * Main Constructor
+	 */
+	public LoginWindow(String title, String lastServer, String lastUser, int splash)
 	{
-		super("VASE Deploy: Login");
+		super(title);
 		setBackground(COLOR_MAIN_BACKGROUND);
 		setSize(DIM_MAIN_LOGIN_SPLASH);
 		getContentPane().setMinimumSize(DIM_MAIN_LOGIN_SPLASH);
@@ -60,9 +84,8 @@ public class LoginSplash extends Window implements ActionListener
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setResizable(false);
 		
-		makeItems();
-		makePanels();
-		addListeners();
+		makeItems(lastServer, lastUser);
+		makePanels(splash);
 		setMnemonics();
 		
 		pack();
@@ -73,30 +96,45 @@ public class LoginSplash extends Window implements ActionListener
 	/**
 	 * Makes the attributes for this class
 	 */
-	private void makeItems()
+	private void makeItems(String lastServer, String lastUser)
 	{
 		jbLogin = Utilities.createMainButton("Login");
 		jbCancel = Utilities.createMainButton("Cancel");
 		jbHelp = Utilities.createMainButton("Help");
-		jtfServer = Utilities.createMainTextField(ProjectConstraints.SETTINGS_READER.lastServer);
-		jtfUsername = Utilities.createMainTextField(ProjectConstraints.SETTINGS_READER.lastUser);
+		jtfServer = Utilities.createMainTextField(lastServer);
+		jtfUsername = Utilities.createMainTextField(lastUser);
 		jtfPassword = Utilities.createMainPasswordField();
-		jlError = Utilities.createMainErrorLabel();
 		jtaInfo = Utilities.createMainTextArea();
 		jtaInfo.setFocusable(false);
 		jtaInfo.setCursor(null);
 		jtaInfo.setOpaque(false);
 		jtaInfo.setFont(FONT_DEPLOY_LABEL);
 		setInfoText();
-	}
+	}	
 	
 	/**
 	 * Makes the panels and sets the appropriate constraints
 	 */
-	private void makePanels()
+	private void makePanels(int splash)
 	{
 		Panel jpNorth = new Panel(new SpringLayout(), false, DIM_MAIN_LOGIN_NORTH);
-		JLabel splashLabel = new JLabel(new ImageIcon(getClass().getResource("/images/connect/splash.png")));
+		JLabel splashLabel = null;
+		
+		switch (splash)
+		{
+			case CONNECT_SPLASH:
+			{
+				splashLabel = new JLabel(new ImageIcon(getClass().getResource("/images/connect/splash.png")));
+				break;
+			}
+			
+			case DEPLOY_SPLASH:
+			{
+				splashLabel = new JLabel(new ImageIcon(getClass().getResource("/images/deploy/splash.png")));
+				break;
+			}
+		}
+			
 		jpNorth.add(splashLabel);
 		
 		SpringLayout northLayout = (SpringLayout) jpNorth.getLayout();
@@ -118,7 +156,6 @@ public class LoginSplash extends Window implements ActionListener
 		jpSouth.add(jbLogin);
 		jpSouth.add(jbCancel);
 		jpSouth.add(jbHelp);
-		jpSouth.add(jlError);
 		jpSouth.add(jtaInfo);
 		
 		SpringLayout southLayout = (SpringLayout) jpSouth.getLayout();
@@ -138,8 +175,6 @@ public class LoginSplash extends Window implements ActionListener
 		southLayout.putConstraint(SpringLayout.WEST, jtfUsername, -80, SpringLayout.HORIZONTAL_CENTER, jpSouth);
 		southLayout.putConstraint(SpringLayout.VERTICAL_CENTER, jtfPassword, 30, SpringLayout.VERTICAL_CENTER, jtfUsername);
 		southLayout.putConstraint(SpringLayout.WEST, jtfPassword, -80, SpringLayout.HORIZONTAL_CENTER, jpSouth);
-		southLayout.putConstraint(SpringLayout.HORIZONTAL_CENTER, jlError, 0, SpringLayout.HORIZONTAL_CENTER, jpSouth);
-		southLayout.putConstraint(SpringLayout.VERTICAL_CENTER, jlError, 20, SpringLayout.VERTICAL_CENTER, jtfPassword);
 		southLayout.putConstraint(SpringLayout.VERTICAL_CENTER, jbLogin, -20, SpringLayout.SOUTH, jpSouth);
 		southLayout.putConstraint(SpringLayout.EAST, jbLogin, -15, SpringLayout.WEST, jbCancel);
 		southLayout.putConstraint(SpringLayout.VERTICAL_CENTER, jbCancel, -20, SpringLayout.SOUTH, jpSouth);
@@ -157,7 +192,7 @@ public class LoginSplash extends Window implements ActionListener
 	 */
 	private void setInfoText()
 	{
-		String text = "Enter the IP Address or Hostname of the VMware vCenter Server hosting Project_VASE.  " +
+		String text = "Enter the IP Address or Hostname of the VMware vCenter Server hosting Project_VASE. " +
 					  "Use the username or password of the local account residing on the server to manage, " +
 					  "deploy and control Virtual Machines.";
 		jtaInfo.setText(text);
@@ -185,31 +220,6 @@ public class LoginSplash extends Window implements ActionListener
 	}
 	
 	/**
-	 * Adds the listeners for the button and the window
-	 */
-	private void addListeners()
-	{
-		jbLogin.addActionListener(this);
-		jbCancel.addActionListener(this);
-		jbHelp.addActionListener(this);
-		
-		class LoginKeyAdapter extends KeyAdapter
-		{
-			public void keyPressed(KeyEvent event)
-			{
-				int key = event.getKeyCode();
-				if (key == KeyEvent.VK_ENTER)
-				{
-					login();
-				}
-			}
-		}
-		
-		jbLogin.addKeyListener(new LoginKeyAdapter());
-		jtfPassword.addKeyListener(new LoginKeyAdapter());
-	}
-	
-	/**
 	 * Sets the mnemonic values for the buttons
 	 */
 	private void setMnemonics()
@@ -224,7 +234,7 @@ public class LoginSplash extends Window implements ActionListener
 	 * @param password the password from the PasswordField
 	 * @return the password for use by the ServiceInstance
 	 */
-	private String processPassword(char[] password)
+	public String processPassword(char[] password)
 	{
 		StringBuilder builder = new StringBuilder();
 		for (Character each : password)
@@ -236,106 +246,39 @@ public class LoginSplash extends Window implements ActionListener
 	}
 	
 	/**
-	 * Starts the login process
+	 * Enables all fields in the Window
 	 */
-	private void login()
+	public void enableFields()
 	{
-		if (!(jtfServer.getText().equals("") || jtfUsername.getText().equals("") ||
-				jtfPassword.getPassword().length == 0))
-		{
-			try
-			{
-				String address = null;
-				String url = null;
-				
-				if (jtfServer.getText().startsWith("https://"))
-				{
-					url = jtfServer.getText();
-					address = ((url.split("//")[1]).split("/")[0]);
-				}
-				
-				else
-				{
-					url = "https://" + jtfServer.getText() + "/sdk";
-					address = jtfServer.getText();
-				}
-				
-				String password = processPassword(jtfPassword.getPassword());
-				ServiceInstance si = 
-					new ServiceInstance(new URL(url), jtfUsername.getText(), password, true);
-				
-				//Reset Error Field
-				jlError.setText("");
-				
-				//Build the GuiMain
-				Main main = new Main(si);
-				
-				//Set CommandEngine credentials for Scripts
-				main.engine.setCurrentServer(address);
-				main.engine.setCurrentUsername(jtfUsername.getText());
-				
-				ProjectConstraints.LOG.write("Logged in as " + main.engine.getCurrentUsername() + " to " + 
-						main.engine.getCurrentServer());
-				
-				//Dispose the window
-				this.dispose();
-			}
-			
-			catch (MalformedURLException e)
-			{
-				jlError.setText("Could not login to the vCenter server.  Check the address of the server");
-				jtfServer.setText("");
-				jtfPassword.setText("");
-				jtfUsername.setText("");
-				jtfServer.requestFocusInWindow();
-			}
-			
-			catch (RemoteException e)
-			{
-				jlError.setText("Could not login to the vCenter server");
-				jtfPassword.setText("");
-				jtfUsername.setText("");
-				jtfUsername.requestFocusInWindow();
-			}
-			
-			catch (Exception e)
-			{
-				jlError.setText("Error processing login");
-				e.printStackTrace();
-				jtfServer.setText("");
-				jtfPassword.setText("");
-				jtfUsername.setText("");
-				jtfServer.requestFocusInWindow();
-			}
-		}
-		
-		else
-		{
-			jlError.setText("Please enter the server address, username, and password");
-		}
+		jbLogin.setEnabled(true);
+		jbCancel.setEnabled(true);
+		jbHelp.setEnabled(true);
+		jtfServer.setEnabled(true);
+		jtfUsername.setEnabled(true);
+		jtfPassword.setEnabled(true);
 	}
 	
 	/**
-	 * ActionPerformed to initiate login.  Creates service instance and launches
-	 * GuiMain if successful
-	 * @param event the action event, fired by the login button
+	 * Disables all fields in the Window
 	 */
-	public void actionPerformed(ActionEvent event)
+	public void disableFields()
 	{
-		if (event.getActionCommand().equals("Login"))
-		{
-			login();				
-		}
-		
-		else if (event.getActionCommand().equals("Cancel"))
-		{
-			ProjectConstraints.SETTINGS_READER.save();
-			System.exit(0);
-		}
-		
-		else if (event.getActionCommand().equals("Help"))
-		{
-			new HelpWindow("Project_VASE Connect Help", "/html/connect/getting_started.html", ProjectConstraints.LOG);
-		}
+		jbLogin.setEnabled(false);
+		jbCancel.setEnabled(false);
+		jbHelp.setEnabled(false);
+		jtfServer.setEnabled(false);
+		jtfUsername.setEnabled(false);
+		jtfPassword.setEnabled(false);
+	}
+	
+	/**
+	 * Displays an error message
+	 * @param title the title of the dialog
+	 * @param message the message in the error dialog
+	 */
+	public void showErrorMessage(String title, String message)
+	{
+		JOptionPane.showMessageDialog(this, message, title, JOptionPane.ERROR_MESSAGE);
+		enableFields();
 	}
 }

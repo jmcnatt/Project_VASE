@@ -3,6 +3,8 @@
  */
 package vase.client.connect;
 
+import vase.client.connect.gui.LoginSplash;
+
 /**
  * Project_VASE Connect
  * 

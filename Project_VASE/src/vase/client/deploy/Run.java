@@ -3,6 +3,8 @@
  */
 package vase.client.deploy;
 
+import vase.client.deploy.gui.LoginSplash;
+
 /**
  * Project_VASE Deploy
  * 

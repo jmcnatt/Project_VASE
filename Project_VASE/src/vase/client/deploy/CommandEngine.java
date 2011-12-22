@@ -3,9 +3,8 @@
  */
 package vase.client.deploy;
 
-import java.awt.Container;
+import java.awt.Component;
 import java.io.File;
-import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
@@ -13,7 +12,9 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileSystemView;
 
+import vase.client.Engine;
 import vase.client.InterfaceConstraints;
+import vase.client.deploy.gui.LoginSplash;
 import vase.client.deploy.gui.Main;
 import vase.client.deploy.gui.Tab;
 import vase.client.deploy.gui.tab.DeploymentTab;
@@ -23,23 +24,17 @@ import vase.client.deploy.vmo.DeployedVirtualMachine;
 import vase.client.deploy.vmo.FolderExt;
 import vase.client.deploy.vmo.Template;
 import vase.client.deploy.vmo.VirtualMachineExt;
-import vase.client.thread.ProcessErrorThread;
-import vase.client.thread.ProcessInputThread;
+import vase.client.thread.ThreadExt;
 
-import com.vmware.vim25.HostNetworkInfo;
-import com.vmware.vim25.HostVirtualNic;
 import com.vmware.vim25.ManagedObjectNotFound;
-import com.vmware.vim25.ManagedObjectReference;
 import com.vmware.vim25.mo.Datacenter;
 import com.vmware.vim25.mo.Datastore;
 import com.vmware.vim25.mo.Folder;
-import com.vmware.vim25.mo.HostSystem;
 import com.vmware.vim25.mo.InventoryNavigator;
 import com.vmware.vim25.mo.ManagedEntity;
 import com.vmware.vim25.mo.Network;
 import com.vmware.vim25.mo.ServiceInstance;
 import com.vmware.vim25.mo.VirtualMachine;
-import com.vmware.vim25.mo.util.MorUtil;
 
 /**
  * Engine that interfaces with ESX vSphere Server
@@ -49,31 +44,16 @@ import com.vmware.vim25.mo.util.MorUtil;
  * @author James McNatt & Brenton Kapral
  * @version Project_VASE Deploy
  */
-public class CommandEngine implements ProjectConstraints, InterfaceConstraints
+public class CommandEngine extends Engine implements ProjectConstraints, InterfaceConstraints
 {	
-	private String currentServer;
-	private String currentUsername;
-	private String currentPassword;
-	private DeploymentTab deployTab;
 	
-	/**
-	 * Server Instance handling the connection to VCENTER
-	 * @see ServiceInstance
-	 */
-	public ServiceInstance si;
+	private DeploymentTab deployTab;
 	
 	/**
 	 * GuiMain instance
 	 * @see GuiMain
 	 */
 	public Main main;
-	
-	/**
-	 * The project Datacenter
-	 * @see Datacenter
-	 * @see ConfigReader#getDatacenterName()
-	 */
-	public Datacenter dc;
 	
 	/**
 	 * Template directory Folder object, containing all project templates
@@ -118,53 +98,6 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public ArrayList<VirtualMachineExt> vmRootEntities;
 	
-	//Identifiers for PowerOperationsThread
-	
-	/**
-	 * Power on the virtual machine
-	 */
-	public static final int POWER_ON = 1;
-	
-	/**
-	 * Power off the virtual machine
-	 */
-	public static final int POWER_OFF = 2;
-	
-	/**
-	 * Suspend the virtual machine
-	 */
-	public static final int SUSPEND = 3;
-	
-	/**
-	 * Reset the virtual machine
-	 */
-	public static final int RESET = 4;
-	
-	/**
-	 * Shutdown the virtual machine
-	 */
-	public static final int SHUTDOWN = 5;
-	
-	/**
-	 * Restart the virtual machine
-	 */
-	public static final int RESTART = 6;
-	
-	/**
-	 * Delete the virtual machine from the disk
-	 */
-	public static final int DELETE = 7;
-	
-	/**
-	 * Rename the virtual machine
-	 */
-	public static final int RENAME = 8;
-	
-	/**
-	 * Move the virtual machine from one datastore to another
-	 */
-	public static final int MOVE = 9;
-	
 	/**
 	 * Main Constructor
 	 * Takes a ServiceInstance object created by the login splash
@@ -173,7 +106,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 */
 	public CommandEngine(ServiceInstance si, Main main)
 	{
-		this.si = si;
+		super(si);
 		this.main = main;
 		vmTemplates = new ArrayList<Template>();
 		vmRootEntities = new ArrayList<VirtualMachineExt>();
@@ -237,162 +170,18 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		catch (Exception e)
 		{
 			LOG.printStackTrace(e);
-			e.printStackTrace();
 		}
 	}
 	
 	/**
-	 * Launches the VM's console
-	 * <br />
-	 * If the VM has been removed or is no longer reachable, Exception will be thrown and a dialog box
-	 * will appear to inform the user.  Output of the process is appended to the log file.
-	 * @param the virtual machine to target
+	 * Launches the VM's console, calls the superclass's method
+	 * @param vm the Virtual Machine
 	 */
 	public void launchConsole(VirtualMachine vm)
 	{
-		try
-		{
-			ManagedObjectReference hostReference = vm.getSummary().runtime.host;
-			ManagedEntity host = MorUtil.createExactManagedEntity(si.getServerConnection(), hostReference);
-			
-			//Get Network info
-			HostNetworkInfo networkInfo = ((HostSystem) host).getConfig().network;
-			HostVirtualNic[] virtualNics = null;
-			HostVirtualNic[] serviceNics = null;
-			String ipAddress = null;
-			
-			if (networkInfo.getConsoleVnic() != null)
-			{
-				serviceNics = networkInfo.getConsoleVnic();
-			}
-			
-			if (networkInfo.getVnic() != null)
-			{
-				virtualNics = networkInfo.getVnic();
-			}
-			
-			if (serviceNics != null)
-			{
-				ipAddress = serviceNics[0].getSpec().getIp().ipAddress;
-			}
-			
-			else if (virtualNics != null)
-			{
-				ipAddress = virtualNics[0].getSpec().getIp().ipAddress;
-			}
-			
-			String vmxPath = vm.getConfig().getFiles().getVmPathName();
-			String pathToVMRC = System.getenv("ProgramFiles") + "\\" + VMRC;
-			String args = " -h " + ipAddress + " -u " + HOST_USERNAME + " -p " + HOST_PASSWORD;
-			
-			//Full Screen
-			if (SETTINGS_READER.fullScreen)
-			{
-				args += " -X ";
-			}
-			
-			else
-			{
-				args += " ";
-			}
-			
-			//VM Datastore and VMX file location
-			args += "-m \"" + vmxPath + "\"";
-			
-			LOG.write("Launching console for " + vm.getName() + ".  Please wait...");
-			Process p = Runtime.getRuntime().exec(pathToVMRC + args);
-			
-			Thread inputThread = new ProcessInputThread(p.getInputStream(), LOG);
-			Thread errorThread = new ProcessErrorThread(p.getErrorStream(), LOG);
-			
-			inputThread.start();
-			errorThread.start();
-			p.getOutputStream().close();			
-		}
-		
-		catch (NullPointerException e)
-		{
-			JOptionPane.showMessageDialog(main, "Error: Could not access information related to the Virtual Machine Host", 
-					"Error", JOptionPane.ERROR_MESSAGE);
-			LOG.printStackTrace(e);
-		}
-		
-		catch (RuntimeException e)
-		{
-			disconnect();
-		}
-		
-		catch (IOException e)
-		{
-			JOptionPane.showMessageDialog(main, "Error: Could not execute VMRC. Please check the path in deploy.conf",
-					"Error", JOptionPane.ERROR_MESSAGE);
-			LOG.printStackTrace(e);
-		}
-		
-		catch (Exception e)
-		{
-			JOptionPane.showMessageDialog(main, "Error: Could not locate virtual machine in the datacenter", "Error", JOptionPane.ERROR_MESSAGE);
-			LOG.printStackTrace(e);
-		}
+		super.launchConsole(vm, LOG, main, VMRC, HOST_USERNAME, HOST_PASSWORD, SETTINGS_READER.fullScreen);
 	}
 	
-	/**
-	 * Gets the IP address of the vCenter server
-	 * @return the currentServer
-	 */
-	public String getCurrentServer()
-	{
-		return currentServer;
-	}
-
-	/**
-	 * Sets the IP address representation of the vCenter server
-	 * @param currentServer the currentServer to set
-	 */
-	public void setCurrentServer(String currentServer)
-	{
-		this.currentServer = currentServer;
-	}
-
-	/**
-	 * Gets the username of the user currently logged on
-	 * @return the currentUsername
-	 */
-	public String getCurrentUsername()
-	{
-		return currentUsername;
-	}
-
-	/**
-	 * Sets the username of the user currently logged on
-	 * @param currentUsername the name of the current user logged on
-	 */
-	public void setCurrentUsername(String currentUsername)
-	{
-		this.currentUsername = currentUsername;
-	}
-
-	/**
-	 * Gets the password of the user logged in
-	 * <br />
-	 * <strong>IMPORTANT</strong>: This information is stored in plain text and should
-	 * only be used to call scripts in the deployment operation
-	 * @return the currentPassword
-	 */
-	public String getCurrentPassword()
-	{
-		return currentPassword;
-	}
-
-	/**
-	 * Sets the password for the user currently logged on
-	 * @param currentPassword the password for the current user
-	 */
-	public void setCurrentPassword(String currentPassword)
-	{
-		this.currentPassword = currentPassword;
-	}
-
 	/**
 	 * Deploys the collected VirtualMachines from the GuiDeploymentWizard
 	 * <br />
@@ -416,7 +205,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			LOG.write("Powering on " + vm.getName());
-			Thread thread = new CommandOperationsThread(vm, POWER_ON, this);
+			ThreadExt thread = new CommandOperationsThread(vm, POWER_ON, this);
 			thread.start();
 		}
 		
@@ -435,7 +224,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			LOG.write("Powering off " + vm.getName());
-			Thread thread = new CommandOperationsThread(vm, POWER_OFF, this);
+			ThreadExt thread = new CommandOperationsThread(vm, POWER_OFF, this);
 			thread.start();
 		}
 		
@@ -454,7 +243,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			LOG.write("Suspending " + vm.getName());
-			Thread thread = new CommandOperationsThread(vm, SUSPEND, this);
+			ThreadExt thread = new CommandOperationsThread(vm, SUSPEND, this);
 			thread.start();
 		}
 		
@@ -471,7 +260,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	public void reset(VirtualMachine vm)
 	{
 		LOG.write("Reseting " + vm.getName());
-		Thread thread = new CommandOperationsThread(vm, RESET, this);
+		ThreadExt thread = new CommandOperationsThread(vm, RESET, this);
 		thread.start();
 	}
 	
@@ -484,7 +273,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			LOG.write("Shutting down " + vm.getName());
-			Thread thread = new CommandOperationsThread(vm, SHUTDOWN, this);
+			ThreadExt thread = new CommandOperationsThread(vm, SHUTDOWN, this);
 			thread.start();
 		}
 		
@@ -503,7 +292,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			LOG.write("Restarting " + vm.getName());
-			Thread thread = new CommandOperationsThread(vm, RESTART, this);
+			ThreadExt thread = new CommandOperationsThread(vm, RESTART, this);
 			thread.start();
 		}
 		
@@ -527,7 +316,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 			if (confirm == JOptionPane.YES_OPTION)
 			{
 				LOG.write("Deleting " + vm.getName() + " from datastore");
-				Thread thread = new CommandOperationsThread(vm, DELETE, this);
+				ThreadExt thread = new CommandOperationsThread(vm, DELETE, this);
 				thread.start();
 			}
 		}
@@ -550,7 +339,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 			if (name != null)
 			{
 				LOG.write("Renaming " + vm.getName() + " to " + name);
-				Thread thread = new CommandOperationsThread(vm, RENAME, this, name);
+				ThreadExt thread = new CommandOperationsThread(vm, RENAME, this, name);
 				thread.start();
 			}
 		}
@@ -566,12 +355,12 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 		try
 		{
 			String choice =
-				(String) JOptionPane.showInputDialog(main, "Select Team", "Team: ", JOptionPane.INFORMATION_MESSAGE, null, TEAM_NAMES, "Team 1");	
+				(String) JOptionPane.showInputDialog(main, "Select Team", "Team: ", JOptionPane.INFORMATION_MESSAGE, null, TEAM_NAMES, null);	
 			if (choice != null)
 			{
 				LOG.write("Changing " + vm.getName() + " to " + choice);
 				TEAMS.put(vm.getName(), choice);
-				Thread thread = new CommandOperationsThread(vm, MOVE, this, choice);
+				ThreadExt thread = new CommandOperationsThread(vm, MOVE, this, choice);
 				thread.start();
 			}
 		}
@@ -670,7 +459,7 @@ public class CommandEngine implements ProjectConstraints, InterfaceConstraints
 	 * Exports the Last Deployment to an html file
 	 * Called by the GuiMain in an action event
 	 */
-	public void exportLastDeployment(ArrayList<DeployedVirtualMachine> deployed, Container parent)
+	public void exportLastDeployment(ArrayList<DeployedVirtualMachine> deployed, Component parent)
 	{
 		if (deployed.size() != 0)
 		{
