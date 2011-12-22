@@ -256,7 +256,7 @@ public class Engine
 		
 		catch (IOException e)
 		{
-			JOptionPane.showMessageDialog(parent, "Error: Could not execute VMRC. Please check the path in deploy.conf",
+			JOptionPane.showMessageDialog(parent, "Error: Could not execute VMRC. Please check the path in the configuration file",
 					"Error", JOptionPane.ERROR_MESSAGE);
 			log.printStackTrace(e);
 		}
