@@ -31,7 +31,7 @@ public class ReportGenerator
 	/**
 	 * Location of the CSV files on the remote server
 	 */
-	public static final String LOCATION = "\\" + ProjectConstraints.REMOTE_SCRIPT_PATH + "\\users\\";
+	public static final String LOCATION = "\\" + ProjectConstraints.SCRIPT_PATH + "\\users\\";
 	
 	/**
 	 * Makes the report file

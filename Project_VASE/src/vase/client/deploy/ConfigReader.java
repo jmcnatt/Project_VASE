@@ -31,7 +31,7 @@ public class ConfigReader
 	private String hostUsername;
 	private String hostPassword;
 	private String pathToVMRC;
-	private String remoteScriptPath;
+	private String scriptPath;
 	private int maximumDeployment = 7;
 	private int accountFiles = 10;
 	private ArrayList<String> teams;
@@ -299,9 +299,9 @@ public class ConfigReader
 	 * Gets the path to remote scripts for customization
 	 * @return the remoteScriptPath
 	 */
-	public String getRemoteScriptPath()
+	public String getScriptPath()
 	{
-		return remoteScriptPath;
+		return scriptPath;
 	}
 
 	/**
@@ -430,9 +430,9 @@ public class ConfigReader
 						pathToVMRC = value;
 					}
 					
-					else if (variable.equalsIgnoreCase("REMOTE_SCRIPT_PATH"))
+					else if (variable.equalsIgnoreCase("SCRIPT_PATH"))
 					{
-						remoteScriptPath = value;
+						scriptPath = value;
 					}
 					
 					break;

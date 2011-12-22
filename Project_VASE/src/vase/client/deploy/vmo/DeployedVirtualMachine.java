@@ -887,48 +887,48 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 		if (osCategory.equals(WINDOWS))
 		{
 			LOG.write(getVmName() + ": Generating Network Config Script", true);
-			Script networking = new Script(this, Script.WINDOWS, Script.NETWORKING, engine);
+			Script networking = new Script(this, Script.WINDOWS, Script.NETWORKING);
 			scripts.add(networking);
 			
 			if (isActiveDirectory())
 			{
 				LOG.write(getVmName() + ": Generating Active Directory Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.ACTIVEDIRECTORY, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.ACTIVEDIRECTORY);
 				scripts.add(script);
 			}
 			
 			if (!isActiveDirectory() && isDns())
 			{
 				LOG.write(getVmName() + ": Generating DNS Script", true);
-				Script script = new Script (this, Script.WINDOWS, Script.DNS, engine);
+				Script script = new Script (this, Script.WINDOWS, Script.DNS);
 				scripts.add(script);
 			}
 			
 			if (isDhcp())
 			{
 				LOG.write(getVmName() + ": Generating DHCP Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.DHCP, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.DHCP);
 				scripts.add(script);
 			}
 			
 			if (isIis())
 			{
 				LOG.write(getVmName() + ": Generating IIS Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.IIS, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.IIS);
 				scripts.add(script);
 			}
 			
 			if (isFileServer())
 			{
 				LOG.write(getVmName() + ": Generating File Server Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.FILESERV, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.FILESERV);
 				scripts.add(script);
 			}
 			
 			if (isBind())
 			{
 				LOG.write(getVmName() + ": Generating Active Directory Bind Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.BIND, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.BIND);
 				scripts.add(script);
 			}
 			
@@ -936,95 +936,95 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 			{
 				LOG.write(getVmName() + ": Generating User Accounts Script", true);
 				LOG.write("Loading Accounts CSV #" + accountsCSV, true);
-				Script script = new Script(this, Script.WINDOWS, Script.ACCOUNTS, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.ACCOUNTS);
 				scripts.add(script);
 			}
 			
 			if (isExploits())
 			{
 				LOG.write(getVmName() + ": Generating Exploit Script", true);
-				Script script = new Script(this, Script.WINDOWS, Script.EXPLOITS, engine);
+				Script script = new Script(this, Script.WINDOWS, Script.EXPLOITS);
 				scripts.add(script);
 			}
 			
 			LOG.write(getVmName() + ": Generating Cleanup Script", true);
-			scripts.add(new Script(this, Script.WINDOWS, Script.CLEANUP, engine));
+			scripts.add(new Script(this, Script.WINDOWS, Script.CLEANUP));
 		}
 		
 		//Scripts for RPM-based Linux
 		if (osCategory.equals(LINUX_RPM))
 		{
 			LOG.write(getVmName() + ": Generating Network Config Script", true);
-			Script networking = new Script(this, Script.LINUX_RPM, Script.NETWORKING, engine);
+			Script networking = new Script(this, Script.LINUX_RPM, Script.NETWORKING);
 			scripts.add(networking);
 			
 			if (isNfs())
 			{
 				LOG.write(getVmName() + ": Generating NFS Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.NFS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.NFS);
 				scripts.add(script);
 			}
 			
 			if (isNfs() && isNis())
 			{
 				LOG.write(getVmName() + ": Generating NIS Script", true);
-				Script script = new Script (this, Script.LINUX_RPM, Script.NIS, engine);
+				Script script = new Script (this, Script.LINUX_RPM, Script.NIS);
 				scripts.add(script);
 			}
 			
 			if (isDhcp())
 			{
 				LOG.write(getVmName() + ": Generating DHCP Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.DHCP, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.DHCP);
 				scripts.add(script);
 			}
 			
 			if (isDns())
 			{
 				LOG.write(getVmName() + ": Generating DNS Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.DNS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.DNS);
 				scripts.add(script);
 			}
 			
 			if (isMail())
 			{
 				LOG.write(getVmName() + ": Generating Mail Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.MAIL, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.MAIL);
 				scripts.add(script);
 			}
 			
 			if (isSamba())
 			{
 				LOG.write(getVmName() + ": Generating Samba Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.SAMBA, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.SAMBA);
 				scripts.add(script);
 			}
 			
 			if (isHttp())
 			{
 				LOG.write(getVmName() + ": Generating HTTP Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.HTTP, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.HTTP);
 				scripts.add(script);
 			}
 			
 			if (isBind())
 			{
 				LOG.write(getVmName() + ": Generating NIS Bind Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.BIND, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.BIND);
 				scripts.add(script);
 			}
 			
 			if (isAccounts())
 			{
 				LOG.write(getVmName() + ": Generating User Accounts Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.ACCOUNTS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.ACCOUNTS);
 				scripts.add(script);
 			}
 			
 			if (isExploits())
 			{
 				LOG.write(getVmName() + ": Generating Exploit Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.EXPLOITS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.EXPLOITS);
 				scripts.add(script);
 			}
 		}
@@ -1033,76 +1033,76 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 		if (osCategory.equals(LINUX_DEBIAN))
 		{
 			LOG.write(getVmName() + ": Generating Network Config Script", true);
-			Script networking = new Script(this, Script.LINUX_DEBIAN, Script.NETWORKING, engine);
+			Script networking = new Script(this, Script.LINUX_DEBIAN, Script.NETWORKING);
 			scripts.add(networking);
 			
 			if (isNfs())
 			{
 				LOG.write(getVmName() + ": Generating NFS Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.NFS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.NFS);
 				scripts.add(script);
 			}
 			
 			if (isNfs() && isNis())
 			{
 				LOG.write(getVmName() + ": Generating NIS Script", true);
-				Script script = new Script (this, Script.LINUX_RPM, Script.NIS, engine);
+				Script script = new Script (this, Script.LINUX_RPM, Script.NIS);
 				scripts.add(script);
 			}
 			
 			if (isDhcp())
 			{
 				LOG.write(getVmName() + ": Generating DHCP Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.DHCP, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.DHCP);
 				scripts.add(script);
 			}
 			
 			if (isDns())
 			{
 				LOG.write(getVmName() + ": Generating DNS Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.DNS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.DNS);
 				scripts.add(script);
 			}
 			
 			if (isMail())
 			{
 				LOG.write(getVmName() + ": Generating Mail Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.MAIL, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.MAIL);
 				scripts.add(script);
 			}
 			
 			if (isSamba())
 			{
 				LOG.write(getVmName() + ": Generating Samba Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.SAMBA, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.SAMBA);
 				scripts.add(script);
 			}
 			
 			if (isHttp())
 			{
 				LOG.write(getVmName() + ": Generating HTTP Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.HTTP, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.HTTP);
 				scripts.add(script);
 			}
 			
 			if (isBind())
 			{
 				LOG.write(getVmName() + ": Generating NIS Bind Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.BIND, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.BIND);
 				scripts.add(script);
 			}
 			
 			if (isAccounts())
 			{
 				LOG.write(getVmName() + ": Generating User Accounts Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.ACCOUNTS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.ACCOUNTS);
 				scripts.add(script);
 			}
 			
 			if (isExploits())
 			{
 				LOG.write(getVmName() + ": Generating Exploit Script", true);
-				Script script = new Script(this, Script.LINUX_RPM, Script.EXPLOITS, engine);
+				Script script = new Script(this, Script.LINUX_RPM, Script.EXPLOITS);
 				scripts.add(script);
 			}
 		}
@@ -1111,76 +1111,76 @@ public class DeployedVirtualMachine implements ProjectConstraints, Serializable
 		if (osCategory.equals(BSD))
 		{
 			LOG.write(getVmName() + ": Generating Network Config Script", true);
-			Script networking = new Script(this, Script.BSD, Script.NETWORKING, engine);
+			Script networking = new Script(this, Script.BSD, Script.NETWORKING);
 			scripts.add(networking);
 			
 			if (isNfs())
 			{
 				LOG.write(getVmName() + ": Generating NFS Script", true);
-				Script script = new Script(this, Script.BSD, Script.NFS, engine);
+				Script script = new Script(this, Script.BSD, Script.NFS);
 				scripts.add(script);
 			}
 			
 			if (isNfs() && isNis())
 			{
 				LOG.write(getVmName() + ": Generating NIS Script", true);
-				Script script = new Script (this, Script.BSD, Script.NIS, engine);
+				Script script = new Script (this, Script.BSD, Script.NIS);
 				scripts.add(script);
 			}
 			
 			if (isDhcp())
 			{
 				LOG.write(getVmName() + ": Generating DHCP Script", true);
-				Script script = new Script(this, Script.BSD, Script.DHCP, engine);
+				Script script = new Script(this, Script.BSD, Script.DHCP);
 				scripts.add(script);
 			}
 			
 			if (isDns())
 			{
 				LOG.write(getVmName() + ": Generating DNS Script", true);
-				Script script = new Script(this, Script.BSD, Script.DNS, engine);
+				Script script = new Script(this, Script.BSD, Script.DNS);
 				scripts.add(script);
 			}
 			
 			if (isMail())
 			{
 				LOG.write(getVmName() + ": Generating Mail Script", true);
-				Script script = new Script(this, Script.BSD, Script.MAIL, engine);
+				Script script = new Script(this, Script.BSD, Script.MAIL);
 				scripts.add(script);
 			}
 			
 			if (isSamba())
 			{
 				LOG.write(getVmName() + ": Generating Samba Script", true);
-				Script script = new Script(this, Script.BSD, Script.SAMBA, engine);
+				Script script = new Script(this, Script.BSD, Script.SAMBA);
 				scripts.add(script);
 			}
 			
 			if (isHttp())
 			{
 				LOG.write(getVmName() + ": Generating HTTP Script", true);
-				Script script = new Script(this, Script.BSD, Script.HTTP, engine);
+				Script script = new Script(this, Script.BSD, Script.HTTP);
 				scripts.add(script);
 			}
 			
 			if (isBind())
 			{
 				LOG.write(getVmName() + ": Generating NIS Bind Script", true);
-				Script script = new Script(this, Script.BSD, Script.BIND, engine);
+				Script script = new Script(this, Script.BSD, Script.BIND);
 				scripts.add(script);
 			}
 			
 			if (isAccounts())
 			{
 				LOG.write(getVmName() + ": Generating User Accounts Script", true);
-				Script script = new Script(this, Script.BSD, Script.ACCOUNTS, engine);
+				Script script = new Script(this, Script.BSD, Script.ACCOUNTS);
 				scripts.add(script);
 			}
 			
 			if (isExploits())
 			{
 				LOG.write(getVmName() + ": Generating Exploit Script", true);
-				Script script = new Script(this, Script.BSD, Script.EXPLOITS, engine);
+				Script script = new Script(this, Script.BSD, Script.EXPLOITS);
 				scripts.add(script);
 			}
 		}

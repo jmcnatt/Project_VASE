@@ -6,6 +6,7 @@ package vase.client.deploy;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 
+import vase.client.deploy.utils.ScriptInvoker;
 import vase.client.deploy.vmo.DeployedVirtualMachine;
 import vase.client.deploy.vmo.Script;
 import vase.client.thread.ThreadExt;
@@ -182,8 +183,6 @@ public class DeployThread extends ThreadExt
 		{
 			ProjectConstraints.LOG.write("Error occured while setting the VM network");
 			ProjectConstraints.LOG.printStackTrace(e);
-			
-			e.printStackTrace();
 		}
 	}		
 	
@@ -260,8 +259,7 @@ public class DeployThread extends ThreadExt
 							sleep(5000);
 						} while (vm.getSummary().guest.toolsStatus.toString().equalsIgnoreCase("toolsNotRunning"));
 						
-						ProjectConstraints.LOG.write("Ready to copy script onto " + guestName, true);
-						script.invoke();
+						ScriptInvoker.invoke(vm, script, engine);
 						
 						//First script requires a reboot, set sleep time accordingly
 						if (count == 0) sleep(30000);							
@@ -273,7 +271,7 @@ public class DeployThread extends ThreadExt
 					ProjectConstraints.TEAMS.put(newVM.getVmName(), newVM.getTeam());
 				}
 				
-				ProjectConstraints.LOG.write(newVM.getVmName() + " deployed successfully");
+				ProjectConstraints.LOG.write(newVM.getVmName() + " customization complete");
 			}
 			
 			catch (ArrayIndexOutOfBoundsException e)
@@ -288,24 +286,18 @@ public class DeployThread extends ThreadExt
 			{
 				ProjectConstraints.LOG.write("Error: Permission to deploy virtual machine denied");
 				ProjectConstraints.LOG.printStackTrace(e);
-				
-				e.printStackTrace();
 			}
 			
 			catch (RemoteException e)
 			{
 				engine.disconnect();
 				ProjectConstraints.LOG.printStackTrace(e);
-				
-				e.printStackTrace();
 			}
 			
 			catch (Exception e)
 			{
-				ProjectConstraints.LOG.write("Exception caught in deployment", true);
+				ProjectConstraints.LOG.write("Unhandled Exception caught in deployment", true);
 				ProjectConstraints.LOG.printStackTrace(e);
-				
-				e.printStackTrace();
 			}
 		}
 		

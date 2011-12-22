@@ -29,8 +29,6 @@ import vase.client.InterfaceConstraints;
  */
 public class ListDataRenderer implements ListCellRenderer, InterfaceConstraints
 {
-	private static final long serialVersionUID = 3682446958335321543L;
-	
 	/**
 	 * Renders the Panel on the List
 	 * @param list the List to render

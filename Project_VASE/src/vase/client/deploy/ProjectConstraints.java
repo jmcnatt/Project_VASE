@@ -26,12 +26,12 @@ public interface ProjectConstraints
 	/**
 	 * Version of this project
 	 */
-	String VERSION = "1.0.0";
+	String VERSION = "1.0.1";
 	
 	/**
 	 * The build of this project
 	 */
-	String BUILD = "602";
+	String BUILD = "634";
 	
 	/**
 	 * The stage of this project
@@ -126,7 +126,7 @@ public interface ProjectConstraints
 	 * Gets the share name on the VCenter server for the remote scritps
 	 * @see ConfigReader#getRemoteScriptPath()
 	 */
-	String REMOTE_SCRIPT_PATH = CONFIG.getRemoteScriptPath();
+	String SCRIPT_PATH = CONFIG.getScriptPath();
 	
 	/**
 	 * Amount of seconds to wait between GUI refreshes, defined in deploy.conf

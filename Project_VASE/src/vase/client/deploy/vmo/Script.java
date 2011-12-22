@@ -3,9 +3,6 @@
  */
 package vase.client.deploy.vmo;
 
-import vase.client.thread.ProcessErrorThread;
-import vase.client.thread.ProcessInputThread;
-import vase.client.deploy.CommandEngine;
 import vase.client.deploy.ProjectConstraints;
 
 /**
@@ -194,7 +191,7 @@ public class Script implements ProjectConstraints
 	/**
 	 * Default Windows script destination on the guest VM virtual hard disk
 	 */
-	public static final String WINDOWS_SCRIPT_DESTINATION = "C:\\";
+	public static final String WINDOWS_SCRIPT_DESTINATION = "C:\\temp";
 	
 	/**
 	 * Default Linux/BSD script destination on the guest VM virtual hard disk
@@ -457,17 +454,47 @@ public class Script implements ProjectConstraints
 	 */
 	public static final String BSD_EXPLOITS = "bsd-exploits.pl";
 	
-	//DeployedVirtualMachine object passed in
-	private DeployedVirtualMachine newVM;
+	/**
+	 * Deployed Virtual Machine object
+	 */
+	public DeployedVirtualMachine newVM;
 	
-	//Script text
-	private String args;								//Copied script args
-	private String script;								//Copied script
-	private String scriptType;							//Script type (ex: bat)
-	private String scriptDestination;					//Destination directory on guest
-	private String username;							//Guest VM Username
-	private String password;							//Guest VM password
-	private CommandEngine engine;						//CommandEngine
+	//Script components
+	
+	/**
+	 * Script arguments
+	 */
+	public String args;
+	
+	/**
+	 * Script command / file name
+	 */
+	public String script;
+	
+	/**
+	 * Script type
+	 */
+	public String scriptType;
+	
+	/**
+	 * Script destination, C:\\temp or /tmp/
+	 */
+	public String scriptDestination;
+	
+	/**
+	 * Guest VM Username
+	 */
+	public String username;
+	
+	/**
+	 * Guest VM Password
+	 */
+	public String password;
+	
+	/**
+	 * Full Script path
+	 */
+	public String path;
 	
 	/**
 	 * Main Constructor that creates the full script to be executed
@@ -478,10 +505,9 @@ public class Script implements ProjectConstraints
 	 * @param scriptCommand the script syntax and arguments
 	 * @param engine the command engine instance
 	 */
-	public Script(DeployedVirtualMachine newVM, int guestOS, int scriptCommand, CommandEngine engine)
+	public Script(DeployedVirtualMachine newVM, int guestOS, int scriptCommand)
 	{
 		this.newVM = newVM;
-		this.engine = engine;
 		
 		switch (guestOS)
 		{
@@ -928,42 +954,6 @@ public class Script implements ProjectConstraints
 				scriptDestination = LINUX_SCRIPT_DESTINATION;
 				break;
 			}
-			
-			
 		}
-	}
-	
-	/**
-	 * Invokes the Script
-	 * <br />
-	 * Calls the powershell invoke script in the resources folder
-	 */
-	public void invoke() throws Exception
-	{
-		LOG.write("Invoking script...", true);
-		String thisScript = String.format("%s %s \"%s %s %s '%s' %s '%s' %s %s %s %s\"",
-										   POWERSHELL,
-										   INVOKE,
-										   engine.getCurrentServer(),
-										   engine.getCurrentUsername(),
-										   engine.getCurrentPassword(),
-										   newVM.getVmName(),
-										   script,
-										   args,
-										   scriptType,
-										   scriptDestination,
-										   username,
-										   password);
-		Process p = Runtime.getRuntime().exec(thisScript);
-		
-		Thread inputThread = new ProcessInputThread(p.getInputStream(), LOG);
-		Thread errorThread = new ProcessErrorThread(p.getErrorStream(), LOG);
-		
-		inputThread.start();
-		errorThread.start();
-		p.getOutputStream().close();
-		p.waitFor();
-		
-		LOG.write("Script invoke complete", true);
 	}
 }

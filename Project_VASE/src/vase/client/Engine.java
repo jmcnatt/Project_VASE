@@ -172,6 +172,45 @@ public class Engine
 	}
 	
 	/**
+	 * Gets the IP Address of a host via the service console
+	 * @param vm the Virtual Machine used to get the host (varies depending on VM)
+	 * @return the IP address of the host
+	 */
+	public String getHostServiceConsoleIpAddress(VirtualMachine vm)
+	{
+		ManagedObjectReference hostReference = vm.getSummary().runtime.host;
+		ManagedEntity host = MorUtil.createExactManagedEntity(si.getServerConnection(), hostReference);
+		
+		//Get Network info
+		HostNetworkInfo networkInfo = ((HostSystem) host).getConfig().network;
+		HostVirtualNic[] virtualNics = null;
+		HostVirtualNic[] serviceNics = null;
+		String ipAddress = null;
+		
+		if (networkInfo.getConsoleVnic() != null)
+		{
+			serviceNics = networkInfo.getConsoleVnic();
+		}
+		
+		if (networkInfo.getVnic() != null)
+		{
+			virtualNics = networkInfo.getVnic();
+		}
+		
+		if (serviceNics != null)
+		{
+			ipAddress = serviceNics[0].getSpec().getIp().ipAddress;
+		}
+		
+		else if (virtualNics != null)
+		{
+			ipAddress = virtualNics[0].getSpec().getIp().ipAddress;
+		}
+		
+		return ipAddress;
+	}
+	
+	/**
 	 * Launches the VM's console
 	 * <br />
 	 * If the VM has been removed or is no longer reachable, Exception will be thrown and a dialog box
@@ -189,34 +228,8 @@ public class Engine
 	{
 		try
 		{
-			ManagedObjectReference hostReference = vm.getSummary().runtime.host;
-			ManagedEntity host = MorUtil.createExactManagedEntity(si.getServerConnection(), hostReference);
 			
-			//Get Network info
-			HostNetworkInfo networkInfo = ((HostSystem) host).getConfig().network;
-			HostVirtualNic[] virtualNics = null;
-			HostVirtualNic[] serviceNics = null;
-			String ipAddress = null;
-			
-			if (networkInfo.getConsoleVnic() != null)
-			{
-				serviceNics = networkInfo.getConsoleVnic();
-			}
-			
-			if (networkInfo.getVnic() != null)
-			{
-				virtualNics = networkInfo.getVnic();
-			}
-			
-			if (serviceNics != null)
-			{
-				ipAddress = serviceNics[0].getSpec().getIp().ipAddress;
-			}
-			
-			else if (virtualNics != null)
-			{
-				ipAddress = virtualNics[0].getSpec().getIp().ipAddress;
-			}
+			String ipAddress = getHostServiceConsoleIpAddress(vm);
 			
 			String vmxPath = vm.getConfig().getFiles().getVmPathName();
 			String pathToVMRC = System.getenv("ProgramFiles") + "\\" + vmrcPath;
